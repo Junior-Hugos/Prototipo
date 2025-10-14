@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Collectiico — Campanhas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+  <header class="bg-amber-700 text-white">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-lg font-bold">Collectiico</h1>
+      <nav class="flex gap-3">
+        <a href="index.html" class="hover:underline">Início</a>
+        <a href="solicitar.html" class="hover:underline">Solicitar Coleta</a>
+        <a href="rotas.html" class="hover:underline">Rotas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl mx-auto px-6 py-12">
+    <h2 class="text-2xl font-bold text-amber-800 mb-4">Campanhas de Conscientização</h2>
+    <p class="text-gray-600 mb-6">Divulgue ações, eventos e materiais educativos para a comunidade.</p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded shadow">
+        <h3 class="font-semibold mb-2">Criar campanha</h3>
+        <form id="formCampanha" class="grid gap-3">
+          <input id="tituloCamp" placeholder="Título" class="p-2 border rounded" required>
+          <textarea id="descCamp" rows="4" placeholder="Descrição" class="p-2 border rounded"></textarea>
+          <button class="bg-amber-700 text-white px-4 py-2 rounded">Criar campanha</button>
+        </form>
+      </div>
+
+      <div class="bg-white p-6 rounded shadow">
+        <h3 class="font-semibold mb-2">Campanhas ativas</h3>
+        <ul id="ulCampanhas" class="space-y-3"></ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-amber-900 text-amber-100 py-6 text-center">
+    <div class="max-w-6xl mx-auto px-6">Protótipo Collectiico</div>
+  </footer>
+
+  <script>
+    const formCamp = document.getElementById('formCampanha');
+    const ulCamp = document.getElementById('ulCampanhas');
+
+    function renderCampanhas() {
+      const arr = JSON.parse(localStorage.getItem('collect_campaigns') || '[]');
+      ulCamp.innerHTML = '';
+      if (arr.length === 0) {
+        ulCamp.innerHTML = '<li class="text-sm text-gray-500">Nenhuma campanha ativa.</li>';
+        return;
+      }
+      arr.forEach(c => {
+        const li = document.createElement('li');
+        li.className = 'p-3 border rounded bg-gray-50';
+        li.innerHTML = `<div class="font-medium">${c.titulo}</div><div class="text-sm text-gray-600">${c.desc}</div>
+                        <div class="mt-2"><button data-id="${c.id}" class="text-sm text-red-600">Remover</button></div>`;
+        ulCamp.appendChild(li);
+      });
+    }
+
+    formCamp.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const t = document.getElementById('tituloCamp').value.trim();
+      const d = document.getElementById('descCamp').value.trim();
+      if (!t) { alert('Título obrigatório'); return; }
+      const arr = JSON.parse(localStorage.getItem('collect_campaigns') || '[]');
+      arr.push({ id: Date.now(), titulo: t, desc: d });
+      localStorage.setItem('collect_campaigns', JSON.stringify(arr));
+      formCamp.reset();
+      renderCampanhas();
+    });
+
+    ulCamp.addEventListener('click', (e) => {
+      if (e.target.dataset.id) {
+        let arr = JSON.parse(localStorage.getItem('collect_campaigns') || '[]');
+        arr = arr.filter(c => c.id !== Number(e.target.dataset.id));
+        localStorage.setItem('collect_campaigns', JSON.stringify(arr));
+        renderCampanhas();
+      }
+    });
+
+    renderCampanhas();
+  </script>
+</body>
+</html>

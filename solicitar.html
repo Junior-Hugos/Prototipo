@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Collectiico — Solicitar Coleta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+  <header class="bg-amber-700 text-white">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-lg font-bold">Collectiico</h1>
+      <nav class="flex gap-3">
+        <a href="index.html" class="hover:underline">Início</a>
+        <a href="cadastro.html" class="hover:underline">Cadastro</a>
+        <a href="rotas.html" class="hover:underline">Rotas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-5xl mx-auto px-6 py-12">
+    <h2 class="text-2xl font-bold text-amber-800 mb-4">Solicitar Coleta</h2>
+    <p class="text-gray-600 mb-6">
+      Preencha o pedido. O sistema tentará localizar o endereço no mapa automaticamente
+      (usando a API Nominatim/OpenStreetMap) e salvará as coordenadas junto à solicitação.
+    </p>
+
+    <form id="formColeta" class="bg-white p-6 rounded shadow grid grid-cols-1 gap-4">
+      <label class="text-sm">Nome do solicitante</label>
+      <input id="nomeSolic" class="p-2 border rounded" placeholder="Seu nome" required>
+
+      <label class="text-sm">Email</label>
+      <input id="emailSolic" type="email" class="p-2 border rounded" placeholder="seu@email">
+
+      <label class="text-sm">Endereço</label>
+      <input id="enderecoSolic" class="p-2 border rounded" placeholder="Rua, bairro, cidade" required>
+
+      <label class="text-sm">Materiais (separe por vírgula)</label>
+      <input id="materiais" class="p-2 border rounded" placeholder="Papel, plástico, vidro">
+
+      <div class="flex gap-3">
+        <button type="submit" class="bg-amber-700 text-white px-4 py-2 rounded">Enviar solicitação</button>
+        <button id="verColetas" type="button" class="border px-4 py-2 rounded">Ver solicitações</button>
+      </div>
+    </form>
+
+    <div id="listaColetas" class="mt-6 hidden">
+      <h3 class="font-semibold mb-2">Solicitações</h3>
+      <ul id="ulColetas" class="space-y-2"></ul>
+    </div>
+  </main>
+
+  <footer class="bg-amber-900 text-amber-100 py-6 text-center">
+    <div class="max-w-5xl mx-auto px-6">Protótipo Collectiico</div>
+  </footer>
+
+  <script>
+    const GEOCACHE_KEY = 'collect_geocache';
+    const geocache = JSON.parse(localStorage.getItem(GEOCACHE_KEY) || '{}');
+
+    function sleep(ms){ return new Promise(res=>setTimeout(res,ms)); }
+
+    async function geocodeAddress(address){
+      const key = address.trim();
+      if (!key) return null;
+      if (geocache[key]) return geocache[key];
+      await sleep(500);
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(key)}&limit=1&addressdetails=0`;
+      try {
+        const res = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const item = { lat: Number(data[0].lat), lng: Number(data[0].lon), display_name: data[0].display_name };
+          geocache[key] = item;
+          localStorage.setItem(GEOCACHE_KEY, JSON.stringify(geocache));
+          return item;
+        }
+      } catch(e){ console.warn('Erro geocoding', e); }
+      return null;
+    }
+
+    const sess = JSON.parse(localStorage.getItem('collect_session') || 'null');
+    if (sess) {
+      document.getElementById('nomeSolic').value = sess.nome || '';
+      document.getElementById('emailSolic').value = sess.email || '';
+      document.getElementById('enderecoSolic').value = sess.endereco || '';
+    }
+
+    const formColeta = document.getElementById('formColeta');
+    const ul = document.getElementById('ulColetas');
+    const listaDiv = document.getElementById('listaColetas');
+
+    formColeta.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const coleta = {
+        id: Date.now(),
+        nome: document.getElementById('nomeSolic').value.trim(),
+        email: document.getElementById('emailSolic').value.trim(),
+        endereco: document.getElementById('enderecoSolic').value.trim(),
+        materiais: document.getElementById('materiais').value.split(',').map(s => s.trim()).filter(Boolean),
+        status: 'agendada'
+      };
+
+      const geo = await geocodeAddress(coleta.endereco);
+      if (geo) {
+        coleta.lat = geo.lat;
+        coleta.lng = geo.lng;
+        coleta.geolocalizado = true;
+        coleta.localDisplay = geo.display_name;
+      } else {
+        coleta.geolocalizado = false;
+      }
+
+      const arr = JSON.parse(localStorage.getItem('collect_coletas') || '[]');
+      arr.push(coleta);
+      localStorage.setItem('collect_coletas', JSON.stringify(arr));
+
+      alert(geo
+        ? `Solicitação salva!\nLocal identificado: ${geo.display_name}`
+        : `Solicitação salva, mas o endereço não foi localizado automaticamente.`);
+      formColeta.reset();
+    });
+
+    document.getElementById('verColetas').addEventListener('click', () => {
+      const arr = JSON.parse(localStorage.getItem('collect_coletas') || '[]');
+      ul.innerHTML = '';
+      if (arr.length === 0) {
+        ul.innerHTML = '<li class="text-sm text-gray-500">Nenhuma solicitação.</li>';
+      } else {
+        arr.forEach(c => {
+          const li = document.createElement('li');
+          li.className = 'p-3 bg-gray-50 border rounded flex justify-between items-start';
+          li.innerHTML = `
+            <div>
+              <div class="font-medium">${c.nome} <span class="text-sm text-gray-500">(${c.status})</span></div>
+              <div class="text-sm text-gray-600">${c.endereco}</div>
+              <div class="text-sm text-gray-600">Materiais: ${c.materiais.join(', ')}</div>
+              ${c.geolocalizado ? `<div class="text-xs text-green-600">✔ Localizado</div>` : `<div class="text-xs text-red-600">✖ Sem coordenadas</div>`}
+            </div>
+            <button data-del="${c.id}" class="text-sm text-red-600 hover:underline">Remover</button>`;
+          ul.appendChild(li);
+        });
+      }
+      listaDiv.classList.remove('hidden');
+    });
+
+    ul.addEventListener('click', (e) => {
+      if (e.target.dataset.del) {
+        const id = Number(e.target.dataset.del);
+        let arr = JSON.parse(localStorage.getItem('collect_coletas') || '[]');
+        arr = arr.filter(x => x.id !== id);
+        localStorage.setItem('collect_coletas', JSON.stringify(arr));
+        e.target.closest('li').remove();
+      }
+    });
+  </script>
+</body>
+</html>
