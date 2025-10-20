@@ -1,0 +1,136 @@
+// prisma/schema.prisma
+
+// Define o provedor do banco de dados (PostgreSQL)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Puxa a URL do arquivo .env
+}
+
+// Define o gerador do Prisma Client (para TypeScript)
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -------- MODELAGEM DO SEU PROJETO --------
+
+// Modelo base 'Usuario' [cite: 240-246]
+// Armazena dados comuns a todos os perfis
+model Usuario {
+  id        String    @id @default(uuid())
+  nome      String
+  email     String    @unique // Email deve ser único
+  senha     String // Vamos armazenar o hash da senha
+  endereco  String? 
+  tipo      String // "DOADOR", "VOLUNTARIO", "EMPRESA"
+
+  // Relações 1-para-1 com os perfis
+  doador     Doador?
+  voluntario Voluntario?
+  empresa    Empresa?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Perfil Doador
+model Doador {
+  id         String   @id @default(uuid())
+  telefone   String?
+
+  // Chave estrangeira para a relação 1-para-1
+  usuarioId  String    @unique // @unique garante que é 1-para-1
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+
+  // Um doador pode fazer várias solicitações de coleta
+  coletas    Coleta[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Perfil Voluntario
+model Voluntario {
+  id              String   @id @default(uuid())
+  disponibilidade String?  // "Seg, Qua (manhã)"
+
+  // Chave estrangeira para a relação 1-para-1
+  usuarioId       String    @unique
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+
+  // Um voluntário pode realizar várias coletas
+  coletasRealizadas Coleta[] @relation("ColetasDoVoluntario")
+
+  // Relação N:N com Campanhas [cite: 437-438]
+  campanhas         Voluntario_Campanha[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Perfil Empresa
+model Empresa {
+  id                String   @id @default(uuid())
+  cnpj              String   @unique
+  tipoMaterialAceito String? // "Papel, Plástico"
+
+  // Chave estrangeira para a relação 1-para-1
+  usuarioId         String    @unique
+  usuario           Usuario   @relation(fields: [usuarioId], references: [id])
+
+  // Uma empresa pode receber várias coletas
+  coletasRecebidas  Coleta[] @relation("ColetasDaEmpresa")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Modelo Coleta (a transação principal) [cite: 72]
+model Coleta {
+  id           String   @id @default(uuid())
+  data         DateTime // Data da solicitação ou da coleta
+  tipoMaterial String   
+  quantidade   Float    
+  status       String   // Ex: "SOLICITADA", "ACEITA", "REALIZADA", "ENTREGUE"
+
+  // Chave estrangeira para o Doador que solicitou [cite: 61]
+  doadorId     String
+  doador       Doador   @relation(fields: [doadorId], references: [id])
+
+  // Chave estrangeira para o Voluntário que realizou (opcional no início)
+  voluntarioId String?
+  voluntario   Voluntario? @relation(fields: [voluntarioId], references: [id], name: "ColetasDoVoluntario")
+
+  // Chave estrangeira para a Empresa que recebeu (opcional no início)
+  empresaId    String?
+  empresa      Empresa?    @relation(fields: [empresaId], references: [id], name: "ColetasDaEmpresa")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Modelo Campanha [cite: 62]
+model Campanha {
+  id              String    @id @default(uuid())
+  titulo          String
+  descricao       String
+  dataPublicacao  DateTime  @default(now())
+
+  // Relação N:N com Voluntarios
+  voluntarios     Voluntario_Campanha[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Tabela Associativa para Voluntarios <-> Campanhas (N:N)
+// Isso resolve a melhoria que sua equipe identificou [cite: 437-438]
+model Voluntario_Campanha {
+  voluntarioId String
+  voluntario   Voluntario @relation(fields: [voluntarioId], references: [id])
+
+  campanhaId   String
+  campanha     Campanha   @relation(fields: [campanhaId], references: [id])
+
+  // Define uma chave primária composta
+  @@id([voluntarioId, campanhaId])
+}
