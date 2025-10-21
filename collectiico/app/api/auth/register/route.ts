@@ -1,29 +1,27 @@
-// app/api/auth/register/route.ts
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import { hash } from 'bcryptjs';
 
-import { NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma"; // Nosso cliente Prisma global
-import { hash } from "bcryptjs"; // Para criptografar a senha
-
-// Esta é a função que será executada quando houver um POST
 export async function POST(req: Request) {
   try {
-    // 1. Pegar os dados do corpo da requisição
     const body = await req.json();
-    const { nome, email, senha, endereco, tipo, ...profileData } = body;
+    const { 
+      nome, email, password, endereco, tipo, // Campos do Usuario
+      telefone, // Campo do Doador
+      disponibilidade, // Campo do Voluntario
+      cnpj, tipoMaterialAceito // Campos da Empresa
+    } = body;
 
-    // 2. Validação básica
-    if (!email || !senha || !tipo) {
+    // 1. Validação
+    if (!email || !password || !tipo || !nome) {
       return NextResponse.json(
-        { error: "Email, senha e tipo são obrigatórios" },
+        { error: "Nome, email, senha e tipo são obrigatórios" },
         { status: 400 }
       );
     }
 
-    // 3. Verificar se o usuário já existe
-    const existingUser = await prisma.usuario.findUnique({
-      where: { email: email },
-    });
-
+    // 2. Checar se usuário existe
+    const existingUser = await prisma.usuario.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
         { error: "Este email já está em uso" },
@@ -31,38 +29,28 @@ export async function POST(req: Request) {
       );
     }
 
-    // 4. Criptografar a senha
-    // Lembre-se de rodar: npm install bcryptjs @types/bcryptjs
-    const hashedPassword = await hash(senha, 12);
+    // 3. Criptografar senha
+    const hashedPassword = await hash(password, 12);
 
-    // 5. Montar o objeto de dados do usuário
-    // Esta transação aninhada é baseada no seu Diagrama de Classe
+    // 4. Montar dados do Usuário
     const userData: any = {
       nome,
       email,
       senha: hashedPassword,
       endereco,
-      tipo,
+      tipo, // "DOADOR", "VOLUNTARIO", "EMPRESA"
     };
 
-    // 6. Adicionar o perfil aninhado com base no 'tipo'
+    // 5. Adicionar perfil aninhado com base no 'tipo'
     switch (tipo) {
       case "DOADOR":
-        userData.doador = {
-          create: {
-            telefone: profileData.telefone || null,
-          },
-        };
+        userData.doador = { create: { telefone: telefone || null } };
         break;
       case "VOLUNTARIO":
-        userData.voluntario = {
-          create: {
-            disponibilidade: profileData.disponibilidade || null,
-          },
-        };
+        userData.voluntario = { create: { disponibilidade: disponibilidade || null } };
         break;
       case "EMPRESA":
-        if (!profileData.cnpj) {
+        if (!cnpj) {
           return NextResponse.json(
             { error: "CNPJ é obrigatório para Empresa" },
             { status: 400 }
@@ -70,8 +58,8 @@ export async function POST(req: Request) {
         }
         userData.empresa = {
           create: {
-            cnpj: profileData.cnpj,
-            tipoMaterialAceito: profileData.tipoMaterialAceito || null,
+            cnpj,
+            tipoMaterialAceito: tipoMaterialAceito || null,
           },
         };
         break;
@@ -82,21 +70,15 @@ export async function POST(req: Request) {
         );
     }
 
-    // 7. Salvar no banco de dados
+    // 6. Salvar no banco (cria Usuário e Perfil em uma transação)
     const usuario = await prisma.usuario.create({
       data: userData,
     });
 
-    // 8. Retornar sucesso (sem a senha!)
-    return NextResponse.json(
-      {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        tipo: usuario.tipo,
-      },
-      { status: 201 } // 201 = "Created"
-    );
+    // 7. Retornar sucesso (sem a senha!)
+    const { senha, ...userResult } = usuario;
+    return NextResponse.json(userResult, { status: 201 });
+
   } catch (error) {
     console.error("Erro ao criar usuário:", error);
     return NextResponse.json(

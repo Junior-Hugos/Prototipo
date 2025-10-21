@@ -1,26 +1,51 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Define o fundo da página e a fonte padrão */
+body {
+  @apply bg-background text-text-primary;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Estilização base para todos os inputs,
+  como na "TELA DE CADASTRO"
+*/
+@layer base {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  input[type="cnpj"],
+  select,
+  textarea {
+    @apply w-full p-3 border border-border-light rounded-xl bg-white;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-200;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Remove o estilo padrão de "autofill" do navegador */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active{
+      -webkit-box-shadow: 0 0 0 30px white inset !important;
+      box-shadow: 0 0 0 30px white inset !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Classes de componentes customizadas para botões
+  Isso facilita a reutilização
+*/
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-semibold py-3 px-6 rounded-xl shadow-lg shadow-primary/30;
+    @apply hover:bg-primary-dark transition-colors duration-200 ease-in-out;
+    @apply disabled:bg-gray-400 disabled:shadow-none;
+  }
+
+  .btn-secondary {
+     @apply bg-transparent border border-primary text-primary font-semibold py-3 px-6 rounded-xl;
+     @apply hover:bg-primary/10 transition-colors duration-200 ease-in-out;
+  }
 }
