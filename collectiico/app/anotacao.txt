@@ -1,0 +1,5 @@
+dashboard -> ao logar ir para o dashboard
+pagina meu usuario, ao clicar no meu icone ir para uma pagina de meu usuario em que voce pode mudar teu endereço e telefone. configurações
+pagina campanhas.
+pagina solicitar
+rotas e solicitas tem que ser na mesma.
