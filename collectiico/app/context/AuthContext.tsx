@@ -1,12 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from "react";
 // Importa os tipos direto do Prisma
-import { Usuario, Doador, Voluntario, Empresa } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import { Usuario, Doador, Voluntario, Empresa } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 // O novo tipo de sessão que inclui os perfis
-type UserSession = Omit<Usuario, 'senha'> & {
+type UserSession = Omit<Usuario, "senha"> & {
   doador?: Doador | null;
   voluntario?: Voluntario | null;
   empresa?: Empresa | null;
@@ -30,13 +36,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await fetch('/api/auth/me');
+        const res = await fetch("/api/auth/me");
         if (res.ok) {
           const user = await res.json();
           setSession(user);
         }
       } catch (error) {
-        console.error('Nenhuma sessão ativa', error);
+        console.error("Nenhuma sessão ativa", error);
       } finally {
         setIsLoading(false);
       }
@@ -45,36 +51,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
+    setIsLoading(true); // Mantém o isLoading
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
-        alert('Falha no login: ' + (await res.json()).message);
+        // Remove o alert, usa console.error se quiser
+        const errorData = await res.json();
+        console.error(
+          "Falha no login:",
+          errorData.message || "Erro desconhecido"
+        );
         return false;
       }
 
       const user = await res.json();
       setSession(user);
-      alert('Login efetuado: ' + user.nome);
-      return true;
-
+      // Remove o alert de sucesso, usa console.log se quiser
+      console.log("Login efetuado:", user.nome);
+      return true; // Retorna true
     } catch (error) {
-      alert('Erro ao tentar fazer login');
+      // Remove o alert de erro, usa console.error
+      console.error("Erro ao tentar fazer login:", error);
       return false;
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Garante que o isLoading seja desativado
     }
   };
 
   const logout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch("/api/auth/logout", { method: "POST" });
     setSession(null);
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -87,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
   return context;
 }
