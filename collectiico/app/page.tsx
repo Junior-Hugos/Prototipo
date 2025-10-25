@@ -16,9 +16,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className="flex justify-center">
-          {/* Você pode substituir esta imagem por uma que combine mais com o novo design */}
+          {/*  substituir esta imagem por uma imagem do projeto  */}
           <Image
-            src="https://images.unsplash.com/photo-1593113598332-CD288d649414?auto=format&fit=crop&w=900&q=80"
+            src="/img_colectivo.jpg"
             alt="Coleta recicláveis"
             width={900}
             height={600}
