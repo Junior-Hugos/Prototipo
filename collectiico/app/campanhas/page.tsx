@@ -1,7 +1,7 @@
 "use client";
 import { useState, FormEvent, useEffect } from 'react';
 import { Campanha } from '@prisma/client';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 type CampanhaComContagem = Campanha & {
   _count: { voluntarios: number }
@@ -110,6 +110,7 @@ export default function CampanhasPage() {
                 <label className="text-sm font-medium mb-1">Título</label>
                 <input
                   id="titulo"
+                  type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}

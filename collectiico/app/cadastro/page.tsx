@@ -57,7 +57,7 @@ export default function CadastroPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium mb-1">Nome Completo</label>
-            <input id="nome" required value={formData.nome} onChange={handleChange} />
+            <input id="nome" type="text" required value={formData.nome} onChange={handleChange} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
@@ -69,7 +69,7 @@ export default function CadastroPage() {
           </div>
            <div>
             <label className="block text-sm font-medium mb-1">Endereço Principal</label>
-            <input id="endereco" value={formData.endereco} onChange={handleChange} />
+            <input id="endereco" type="text" required value={formData.endereco} onChange={handleChange} />
           </div>
         </div>
         
@@ -87,8 +87,8 @@ export default function CadastroPage() {
         {/* Campos de Perfil Dinâmicos */}
         {formData.tipo === 'DOADOR' && (
           <div>
-            <label className="block text-sm font-medium mb-1">Telefone (Opcional)</label>
-            <input id="telefone" type="tel" placeholder="(99) 99999-9999" value={formData.telefone} onChange={handleChange} />
+            <label className="block text-sm font-medium mb-1">Telefone</label>
+            <input id="telefone" type="tel" placeholder="(99) 99999-9999" required value={formData.telefone} onChange={handleChange} />
           </div>
         )}
 

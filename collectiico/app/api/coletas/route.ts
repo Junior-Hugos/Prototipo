@@ -55,7 +55,10 @@ export async function POST(req: Request) {
 
 // GET - Listar todas as coletas
 export async function GET() {
+   console.log("API GET /api/coletas chamada!");
   try {
+    console.log("Tentando buscar coletas no banco de dados...");
+   
     const coletas = await prisma.coleta.findMany({
       orderBy: { data: 'desc' },
       include: {
@@ -77,8 +80,10 @@ export async function GET() {
         },
       },
     });
+    console.log("Coletas buscadas com sucesso!", coletas);
     return NextResponse.json(coletas, { status: 200 });
   } catch (error) {
+    console.error("ERRO DETALHADO AO BUSCAR COLETAS:", error);
     return NextResponse.json({ message: 'Erro ao buscar coletas' }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import { GeoCache, GeoCacheItem } from '../types';
+import { GeoCache, GeoCacheItem } from '../../types';
 
 const GEOCACHE_KEY = 'collect_geocache';
 

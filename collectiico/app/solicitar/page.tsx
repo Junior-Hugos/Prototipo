@@ -1,6 +1,6 @@
 "use client";
 import { useState, FormEvent, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function SolicitarPage() {
@@ -67,6 +67,7 @@ export default function SolicitarPage() {
           <label className="text-sm font-medium mb-1">Tipo de Material</label>
           <input 
             id="tipoMaterial"
+            type="text"
             placeholder="Ex: Papelão, Plástico, Vidro" 
             required 
             value={formData.tipoMaterial}
