@@ -11,10 +11,10 @@ export default function Header() {
         <Link href="/" className="text-xl font-bold text-primary">Collectiico</Link>
         <nav className="flex gap-4 items-center">
           <Link href="/" className="hover:text-primary transition-colors">Início</Link>
-          <Link href="/solicitar" className="hover:text-primary transition-colors">Solicitar Coleta</Link>
-          <Link href="/rotas" className="hover:text-primary transition-colors">Ver Coletas</Link>
-          <Link href="/campanhas" className="bg-primary-light text-primary font-medium px-4 py-2 rounded-xl">Campanhas</Link>
-          
+          <Link href="/dashboard/solicitar" className="hover:text-primary transition-colors">Solicitar Coleta</Link>
+          <Link href="/dashboard/rotas" className="hover:text-primary transition-colors">Ver Coletas</Link>
+          <Link href="/dashboard/campanhas" className="bg-primary-light text-primary font-medium px-4 py-2 rounded-xl">Campanhas</Link>
+
           {isLoading ? (
             <div className="text-sm">Carregando...</div>
           ) : session ? (

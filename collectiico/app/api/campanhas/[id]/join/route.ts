@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
 // Helper para pegar o ID do Voluntário logado
 async function getVoluntarioId() {
   const cookieStore = cookies();
-  const userId = cookieStore.get('session_userid')?.value;
+  const userId = (await cookieStore).get('session_userid')?.value;
   if (!userId) return null;
 
   const user = await prisma.usuario.findUnique({
@@ -20,7 +20,7 @@ async function getVoluntarioId() {
 }
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const voluntarioId = await getVoluntarioId();

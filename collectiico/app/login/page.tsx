@@ -23,7 +23,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center -mt-20">
+    <div className="min-h-screen flex items-center justify-center">
       {/* --- INÍCIO DO BLOCO CORRETO (ÚNICO) --- */}
       <div className="max-w-md w-full p-8 bg-white rounded-2xl shadow-card">
         <h2 className="text-3xl font-bold text-text-primary mb-6 text-center">

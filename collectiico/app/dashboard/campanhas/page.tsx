@@ -17,20 +17,26 @@ export default function CampanhasPage() {
   const podePostar = session?.tipo === 'VOLUNTARIO' || session?.tipo === 'EMPRESA';
   const eVoluntario = session?.tipo === 'VOLUNTARIO';
 
-  useEffect(() => {
-    const fetchCampanhas = async () => {
-      try {
-        const res = await fetch('/api/campanhas');
-        const data = await res.json();
-        setCampaigns(data);
-      } catch (error) {
-        console.error('Erro ao buscar campanhas', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchCampanhas();
-  }, []);
+ useEffect(() => {
+    const fetchCampanhas = async () => {
+      try {
+        const res = await fetch('/api/campanhas');
+        if (!res.ok) {
+
+            throw new Error(`Erro ${res.status}: Falha ao buscar campanhas`);
+        }
+        const data = await res.json();
+        setCampaigns(data); 
+      } catch (error) {
+        console.error('Erro ao buscar campanhas', error);
+        
+        setCampaigns([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCampanhas();
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

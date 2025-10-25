@@ -1,46 +1,42 @@
-// middleware.ts (CORRIGIDO)
+// middleware.ts 
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-// Não precisamos mais do 'jose' aqui
 
 export async function middleware(req: NextRequest) {
   // 1. Procurar pelo cookie 'session_userid'
   const userIdCookie = req.cookies.get("session_userid")?.value;
 
-  // 2. Definir rotas públicas (que NÃO precisam de login)
-  const publicPaths = ["/login", "/cadastro"];
+  // 2. Definir rotas públicas (INCLUINDO A PÁGINA INICIAL '/')
+  const publicPaths = ["/", "/login", "/cadastro"]; // <-- '/' e '/cadastro' estão aqui
   const currentPath = req.nextUrl.pathname;
-  const isPublicPath = publicPaths.some((path) => currentPath.startsWith(path));
+
+  // Verifica se o caminho atual é EXATAMENTE um dos caminhos públicos
+  const isPublicPathExact = publicPaths.includes(currentPath);
 
   // 3. Lógica de proteção
   if (!userIdCookie) {
-    // Se NÃO há cookie E o usuário NÃO está numa rota pública -> Redireciona para /login
-    if (!isPublicPath) {
+    // Se NÃO há cookie E o usuário NÃO está numa rota pública EXATA -> Redireciona para /login
+    // Isso protege /solicitar, /rotas, /campanhas, etc.
+    if (!isPublicPathExact) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    // Se não há cookie e está numa rota pública -> Deixa passar
+    // Se não há cookie e está numa rota pública EXATA ('/', '/login', '/cadastro') -> Deixa passar
     return NextResponse.next();
   }
 
-  // 4. Se HÁ o cookie 'session_userid'
-  // (Neste modelo simples, apenas a existência do cookie já indica "logado")
+  // 4. Se HÁ o cookie 'session_userid' (usuário logado)
 
-  // Se o usuário logado (tem o cookie) tentar acessar uma rota pública -> Redireciona para /dashboard
-  if (isPublicPath) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  // Se o usuário logado tentar acessar /login ou /cadastro -> Redireciona para /solicitar
+  if (currentPath === "/login" || currentPath === "/cadastro") {
+    return NextResponse.redirect(new URL("/solicitar", req.url)); // <-- Redireciona para solicitar após login
   }
 
-  // Se o usuário logado acessar qualquer outra rota (protegida) -> Deixa passar
+  // Se o usuário logado acessar a página inicial ('/') ou qualquer outra rota protegida -> Deixa passar
   return NextResponse.next();
 
-  /* * NOTA IMPORTANTE DE SEGURANÇA:
-   * Este middleware agora é mais simples, mas menos seguro que o JWT.
-   * Ele apenas verifica se o cookie 'session_userid' EXISTE.
-   * Ele não valida se o ID dentro dele é real ou se a sessão é válida.
-   * Para um projeto real, o ideal seria voltar ao JWT ou usar uma biblioteca
-   * de sessão mais robusta (como NextAuth.js).
-   * Para o projeto integrador, esta verificação de existência pode ser suficiente.
+  /* NOTA DE SEGURANÇA: Continua válida a nota anterior sobre a simplicidade
+   * desta verificação de cookie. Para produção, considere JWT ou NextAuth.js.
    */
 }
 
