@@ -5,7 +5,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useAuth } from '@/context/AuthContext'; // Assumindo que você tem isso
 
 export default function GeneralSettingsPage() {
-  const { session, loading } = useAuth(); // Pegar dados do usuário logado
+  const { session } = useAuth(); // Pegar dados do usuário logado
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -49,7 +49,7 @@ export default function GeneralSettingsPage() {
     }
   };
 
-  if (loading && !session) {
+  if (session === undefined) {
     return <p className="text-text-secondary">Carregando dados...</p>;
   }
 

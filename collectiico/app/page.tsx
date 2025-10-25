@@ -18,7 +18,7 @@ export default function HomePage() {
         <div className="flex justify-center">
           {/*  substituir esta imagem por uma imagem do projeto  */}
           <Image
-            src="/img_colectivo.jpg"
+            src="/img_coletivo.jpg"
             alt="Coleta recicláveis"
             width={900}
             height={600}
