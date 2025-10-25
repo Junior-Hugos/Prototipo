@@ -82,10 +82,6 @@ export default function CadastroPage() {
               value={formData.nome}
               onChange={handleChange}
             />
-<<<<<<< HEAD
->>>>>>> 1558edc (Correção do BUg na tela de cadastro)
-=======
->>>>>>> upstream/Dev
           </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
