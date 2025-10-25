@@ -66,9 +66,12 @@ export default function CadastroPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <label className="block text-sm font-medium mb-1">Nome Completo</label>
             <input id="nome" type="text" required value={formData.nome} onChange={handleChange} />
 =======
+=======
+>>>>>>> upstream/Dev
             <label htmlFor="nome" className="block text-sm font-medium mb-1">
               Nome Completo
             </label>
@@ -79,7 +82,10 @@ export default function CadastroPage() {
               value={formData.nome}
               onChange={handleChange}
             />
+<<<<<<< HEAD
 >>>>>>> 1558edc (Correção do BUg na tela de cadastro)
+=======
+>>>>>>> upstream/Dev
           </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -109,10 +115,13 @@ export default function CadastroPage() {
             />
           </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
            <div>
             <label className="block text-sm font-medium mb-1">Endereço Principal</label>
             <input id="endereco" type="text" required value={formData.endereco} onChange={handleChange} />
 =======
+=======
+>>>>>>> upstream/Dev
           <div>
             <label
               htmlFor="endereco"
@@ -126,7 +135,10 @@ export default function CadastroPage() {
               value={formData.endereco}
               onChange={handleChange}
             />
+<<<<<<< HEAD
 >>>>>>> 1558edc (Correção do BUg na tela de cadastro)
+=======
+>>>>>>> upstream/Dev
           </div>
         </div>
 
@@ -156,9 +168,12 @@ export default function CadastroPage() {
         {formData.tipo === "DOADOR" && (
           <div>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <label className="block text-sm font-medium mb-1">Telefone</label>
             <input id="telefone" type="tel" placeholder="(99) 99999-9999" required value={formData.telefone} onChange={handleChange} />
 =======
+=======
+>>>>>>> upstream/Dev
             <label
               htmlFor="telefone"
               className="block text-sm font-medium mb-1"
@@ -172,7 +187,10 @@ export default function CadastroPage() {
               value={formData.telefone}
               onChange={handleChange}
             />
+<<<<<<< HEAD
 >>>>>>> 1558edc (Correção do BUg na tela de cadastro)
+=======
+>>>>>>> upstream/Dev
           </div>
         )}
 
