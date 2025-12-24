@@ -1,89 +1,120 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
+import { geocodeAddress } from '@/lib/geocoding';
 
-// Função para pegar o ID do Doador logado
-async function getDoadorId() {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get('session_userid')?.value;
-  if (!userId) return null;
-
-  const user = await prisma.usuario.findUnique({
-    where: { id: userId },
-    include: { doador: true },
-  });
-
-  // Somente permite se for Doador e tiver o perfil de doador
-  if (user?.tipo === 'DOADOR' && user.doador) {
-    return user.doador.id;
-  }
-  return null;
-}
-
-// POST - Criar nova coleta (APENAS DOADORES)
+// POST (Criar)
 export async function POST(req: Request) {
-  const doadorId = await getDoadorId();
-  if (!doadorId) {
-    return NextResponse.json({ message: 'Não autorizado: Apenas doadores podem criar coletas' }, { status: 401 });
-  }
-
   try {
+    const cookieStore = await cookies();
+    const userId = cookieStore.get('session_userid')?.value;
+    if (!userId) return NextResponse.json({ message: 'Usuário não autenticado' }, { status: 401 });
+
     const body = await req.json();
-    // Campos do novo schema de Coleta
     const { tipoMaterial, quantidade, data } = body; 
 
-    if (!tipoMaterial || !quantidade || !data) {
-       return NextResponse.json({ message: 'Campos obrigatórios faltando' }, { status: 400 });
+    const user = await prisma.usuario.findUnique({ where: { id: userId }, include: { doador: true } });
+    if (!user) return NextResponse.json({ message: 'Usuário não encontrado' }, { status: 404 });
+
+    let doadorId = user.doador?.id;
+    if (!doadorId) {
+        const novo = await prisma.doador.create({ data: { usuarioId: user.id, telefone: "" } });
+        doadorId = novo.id;
+    }
+
+    let lat = null, lng = null;
+    if (user.endereco) {
+        try {
+            const geo = await geocodeAddress(`${user.endereco} - ${user.cidade || ''}`);
+            if (geo) { lat = geo.lat; lng = geo.lng; }
+        } catch(e) {}
     }
 
     const coleta = await prisma.coleta.create({
       data: {
-        tipoMaterial,
-        quantidade: parseFloat(quantidade),
-        data: new Date(data),
-        status: "SOLICITADA",
-        doadorId: doadorId, // Vincula ao Doador logado
+        tipoMaterial, quantidade: parseFloat(quantidade), data: new Date(data),
+        status: "SOLICITADA", doadorId: doadorId, lat, lng 
       },
     });
-
     return NextResponse.json(coleta, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Erro ao criar coleta' }, { status: 500 });
-  }
+  } catch (error) { return NextResponse.json({ message: 'Erro interno' }, { status: 500 }); }
 }
 
-// GET - Listar todas as coletas
+// GET (Listar)
 export async function GET() {
-   console.log("API GET /api/coletas chamada!");
   try {
-    console.log("Tentando buscar coletas no banco de dados...");
-   
     const coletas = await prisma.coleta.findMany({
       orderBy: { data: 'desc' },
       include: {
-        // Inclui o nome do Doador (via Usuário)
-        doador: {
-          include: {
-            usuario: {
-              select: { nome: true, endereco: true },
-            },
-          },
-        },
-        // Inclui o nome do Voluntário (se houver)
-        voluntario: {
-          include: {
-            usuario: {
-              select: { nome: true },
-            },
-          },
-        },
+        doador: { include: { usuario: { select: { id: true, nome: true, endereco: true, cidade: true } } } },
+        voluntario: { include: { usuario: { select: { id: true, nome: true } } } },
+        empresa: { include: { usuario: { select: { id: true, nome: true } } } }
       },
     });
-    console.log("Coletas buscadas com sucesso!", coletas);
     return NextResponse.json(coletas, { status: 200 });
-  } catch (error) {
-    console.error("ERRO DETALHADO AO BUSCAR COLETAS:", error);
-    return NextResponse.json({ message: 'Erro ao buscar coletas' }, { status: 500 });
-  }
+  } catch (error) { return NextResponse.json({ message: 'Erro ao buscar' }, { status: 500 }); }
+}
+
+// PUT (Aceitar, Concluir ou Liberar)
+export async function PUT(req: Request) {
+    try {
+        const cookieStore = await cookies();
+        const userId = cookieStore.get('session_userid')?.value;
+        if (!userId) return NextResponse.json({ message: 'Não autenticado' }, { status: 401 });
+
+        const user = await prisma.usuario.findUnique({
+             where: { id: userId },
+             include: { voluntario: true, empresa: true }
+        });
+
+        const body = await req.json();
+        const { id, status, action } = body; 
+        const updateData: any = { status };
+
+        // 1. CANCELAR / LIBERAR 
+        if (action === 'liberar') {
+            updateData.status = 'SOLICITADA';
+            updateData.voluntarioId = null; 
+            updateData.empresaId = null;    
+        }
+        // 2. ACEITAR
+        else if (status === 'ACEITA' || status === 'EM_ANDAMENTO') {
+            
+            // Lógica para Voluntário
+            if (user?.tipo === 'VOLUNTARIO') {
+                let volId = user.voluntario?.id;
+                if (!volId) { 
+                    const novo = await prisma.voluntario.create({ data: { usuarioId: userId } });
+                    volId = novo.id;
+                }
+                updateData.voluntarioId = volId;
+            } 
+            
+            // Lógica para Empresa
+            else if (user?.tipo === 'EMPRESA') {
+                let empId = user.empresa?.id;
+                if (!empId) { 
+                    const novo = await prisma.empresa.create({ data: { usuarioId: userId, cnpj: "" } });
+                    empId = novo.id;
+                }
+                updateData.empresaId = empId;
+            }
+        }
+
+        const coleta = await prisma.coleta.update({ where: { id }, data: updateData });
+        return NextResponse.json(coleta);
+    } catch (error) {
+        return NextResponse.json({ message: 'Erro ao atualizar' }, { status: 500 });
+    }
+}
+
+// DELETE (Excluir)
+export async function DELETE(req: Request) {
+    try {
+        const body = await req.json();
+        await prisma.coleta.delete({ where: { id: body.id } });
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        return NextResponse.json({ message: 'Erro ao excluir' }, { status: 500 });
+    }
 }

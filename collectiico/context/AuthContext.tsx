@@ -7,11 +7,11 @@ import React, {
   useState,
   useEffect,
 } from "react";
-// Importa os tipos direto do Prisma
+// Importa os tipos do Prisma 
 import { Usuario, Doador, Voluntario, Empresa } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
-// O novo tipo de sessão que inclui os perfis
+// Definição do tipo da sessão 
 type UserSession = Omit<Usuario, "senha"> & {
   doador?: Doador | null;
   voluntario?: Voluntario | null;
@@ -20,19 +20,20 @@ type UserSession = Omit<Usuario, "senha"> & {
 
 interface AuthContextType {
   session: UserSession | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// --- COMPONENTE PROVIDER ---
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Verifica a sessão no /api/auth/me
+  // Verifica sessão ao carregar
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -50,41 +51,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, []);
 
+  // Função de Login
   const login = async (email: string, password: string) => {
-    setIsLoading(true); // Mantém o isLoading
+    setIsLoading(true); 
     try {
+      const emailLower = email.toLowerCase();
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: emailLower, password: password }), 
       });
 
-      if (!res.ok) {
-        // Remove o alert, usa console.error se quiser
-        const errorData = await res.json();
-        console.error(
-          "Falha no login:",
-          errorData.message || "Erro desconhecido"
-        );
-        return false;
+      const data = await res.json();
+
+      if (!res.ok) {        
+        throw new Error(data.message || "Email ou senha incorretos");
       }
 
-      const user = await res.json();
-      setSession(user);
-      // Remove o alert de sucesso, usa console.log se quiser
-      console.log("Login efetuado:", user.nome);
-      return true; // Retorna true
+      setSession(data);
+      console.log("Login efetuado:", data.nome);
+      
     } catch (error) {
-      // Remove o alert de erro, usa console.error
-      console.error("Erro ao tentar fazer login:", error);
-      return false;
+      throw error; 
     } finally {
-      setIsLoading(false); // Garante que o isLoading seja desativado
+      setIsLoading(false); 
     }
   };
 
+  // Função de Logout
   const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    try {
+        await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+        console.error("Erro ao sair", error);
+    }
     setSession(null);
     router.push("/");
   };
@@ -94,7 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
+} 
+
 
 export function useAuth() {
   const context = useContext(AuthContext);

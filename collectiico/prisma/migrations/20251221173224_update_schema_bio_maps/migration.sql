@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Coleta" ADD COLUMN     "lat" DOUBLE PRECISION,
+ADD COLUMN     "lng" DOUBLE PRECISION;
+
+-- AlterTable
+ALTER TABLE "Usuario" ADD COLUMN     "bio" VARCHAR(255);

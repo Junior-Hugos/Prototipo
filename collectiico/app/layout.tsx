@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,26 @@ export default function RootLayout({
         {/* AuthProvider envolve toda a aplicação */}
         <AuthProvider>
           <Header />
+          <Toaster 
+            position="top-right" 
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#333',
+                color: '#fff',
+              },
+              success: {
+                style: {
+                  background: 'green',
+                },
+              },
+              error: {
+                style: {
+                  background: 'red',
+                },
+              },
+            }} 
+          />
           <main className="flex-1">{children}</main>
           <Footer />
         </AuthProvider>

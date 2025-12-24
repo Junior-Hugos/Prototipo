@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import imgSite from './assets/images/img_site.png';
 
 export default function HomePage() {
   return (
@@ -16,9 +17,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className="flex justify-center">
-          {/*  substituir esta imagem por uma imagem do projeto  */}
+          
           <Image
-            src="/img_coletivo.jpg"
+            src={imgSite}
             alt="Coleta recicláveis"
             width={900}
             height={600}

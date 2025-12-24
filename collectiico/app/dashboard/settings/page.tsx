@@ -1,17 +1,17 @@
 // app/dashboard/settings/page.tsx
-"use client"; // Precisa ser client-side se tiver interatividade (useState, etc.)
+"use client"; 
 
 import { useState, useEffect, FormEvent } from 'react';
-import { useAuth } from '@/context/AuthContext'; // Assumindo que você tem isso
+import { useAuth } from '@/context/AuthContext'; 
 
 export default function GeneralSettingsPage() {
-  const { session } = useAuth(); // Pegar dados do usuário logado
+  const { session } = useAuth(); 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Preenche o formulário quando os dados do usuário carregam
+  // Preenche o formulário com os dados do usuário carregados
   useEffect(() => {
     if (session) {
       setNome(session.nome || '');
@@ -22,25 +22,13 @@ export default function GeneralSettingsPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    setStatusMessage(null); // Limpa mensagem anterior
+    setStatusMessage(null); 
     try {
-      // --- CHAMADA API PARA ATUALIZAR DADOS ---
-      // const res = await fetch('/api/user/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ nome, email }),
-      // });
-      // if (!res.ok) {
-      //   const errorData = await res.json();
-      //   throw new Error(errorData.message || 'Falha ao atualizar perfil.');
-      // }
-      // setStatusMessage({ type: 'success', text: 'Perfil atualizado com sucesso!' });
-      // ----------------------------------------
-
-      // Simulação de sucesso (REMOVA ISSO E USE A API REAL)
+    
+      
       await new Promise(resolve => setTimeout(resolve, 1000));
       setStatusMessage({ type: 'success', text: 'Perfil atualizado com sucesso! (Simulação)' });
-      // Você pode querer atualizar o 'session' no AuthContext aqui
+      
 
     } catch (error: any) {
       setStatusMessage({ type: 'error', text: 'Erro: ' + error.message });
@@ -54,7 +42,7 @@ export default function GeneralSettingsPage() {
   }
 
   return (
-    // Este conteúdo será renderizado DENTRO do <div> do SettingsLayout
+    // Será renderizado DENTRO do <div> do SettingsLayout
     <div>
       <h1 className="text-2xl font-bold mb-6 text-text-primary">Configurações Gerais</h1>
 
@@ -70,7 +58,7 @@ export default function GeneralSettingsPage() {
             value={nome}
             onChange={(e) => setNome(e.target.value)}
             required
-            className="w-full" // Usa o estilo base do globals.css
+            className="w-full" 
             aria-describedby="nome-helper"
           />
            <p id="nome-helper" className="mt-1 text-xs text-text-secondary">Seu nome como será exibido no sistema.</p>
@@ -85,7 +73,7 @@ export default function GeneralSettingsPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full" // Usa o estilo base do globals.css
+            className="w-full"
              aria-describedby="email-helper"
           />
            <p id="email-helper" className="mt-1 text-xs text-text-secondary">Seu email de login. Para alterá-lo, entre em contato.</p>

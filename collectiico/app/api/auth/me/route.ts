@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ message: 'Não autenticado' }, { status: 401 });
     }
 
-    // Busca o usuário e seus perfis (ID agora é String/UUID)
+    // Busca o usuário e seus perfis (UUID)
     const user = await prisma.usuario.findUnique({
       where: { id: userId },
       include: {        

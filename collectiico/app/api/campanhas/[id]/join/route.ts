@@ -2,10 +2,10 @@ import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
-// Helper para pegar o ID do Voluntário logado
+// Pega ID do Voluntário logado
 async function getVoluntarioId() {
-  const cookieStore = cookies();
-  const userId = (await cookieStore).get('session_userid')?.value;
+  const cookieStore = await cookies();
+  const userId = cookieStore.get('session_userid')?.value;
   if (!userId) return null;
 
   const user = await prisma.usuario.findUnique({
@@ -13,34 +13,47 @@ async function getVoluntarioId() {
     include: { voluntario: true },
   });
 
-  if (user?.tipo === 'VOLUNTARIO' && user.voluntario) {
-    return user.voluntario.id;
-  }
-  return null;
+  return user?.voluntario?.id || null;
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// POST: PARTICIPAR 
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const voluntarioId = await getVoluntarioId();
+  
   if (!voluntarioId) {
-    return NextResponse.json({ message: 'Não autorizado: Apenas voluntários podem participar' }, { status: 401 });
+    return NextResponse.json({ message: 'Apenas voluntários podem participar de campanhas' }, { status: 403 });
   }
 
   try {
-    const campanhaId = params.id;
-
-    // Cria a entrada na tabela de junção
     await prisma.voluntario_Campanha.create({
       data: {
         voluntarioId: voluntarioId,
-        campanhaId: campanhaId,
+        campanhaId: params.id,
       },
     });
+    return NextResponse.json({ message: 'Inscrito com sucesso' }, { status: 201 });
+  } catch (error) {  
+    return NextResponse.json({ message: 'Erro ou já inscrito' }, { status: 400 });
+  }
+}
 
-    return NextResponse.json({ message: 'Inscrição realizada!' }, { status: 201 });
+// DELETE: CANCELAR PARTICIPAÇÃO
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const voluntarioId = await getVoluntarioId();
+
+  if (!voluntarioId) return NextResponse.json({ message: 'Proibido' }, { status: 403 });
+
+  try {
+    await prisma.voluntario_Campanha.deleteMany({
+      where: {
+        voluntarioId: voluntarioId,
+        campanhaId: params.id,
+      },
+    });
+    return NextResponse.json({ message: 'Saiu com sucesso' });
   } catch (error) {
-    return NextResponse.json({ message: 'Erro ao se inscrever na campanha' }, { status: 500 });
+    return NextResponse.json({ message: 'Erro ao sair' }, { status: 500 });
   }
 }

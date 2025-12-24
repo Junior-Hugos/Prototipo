@@ -1,81 +1,91 @@
 "use client";
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext"; // Ajuste o caminho se necessário
-import Link from "next/link";
+import { useState, FormEvent } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import toast from 'react-hot-toast'; 
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
+  
+  // Estados do formulário
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    const success = await login(email, password);
-    setIsLoading(false);
-    if (success) {
-      router.push("/dashboard"); // Apenas uma chamada é necessária
-      // router.push("/dashboard"); // Remove esta linha duplicada
+    setLoading(true); 
+
+    try {
+      await login(email, senha); 
+      toast.success('Login realizado com sucesso!');      
+      router.refresh();
+      router.push('/dashboard');
+    } catch (error: any) {      
+      toast.error('Email ou senha incorretos.');      
+      setLoading(false); 
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      {/* --- INÍCIO DO BLOCO CORRETO (ÚNICO) --- */}
-      <div className="max-w-md w-full p-8 bg-white rounded-2xl shadow-card">
-        <h2 className="text-3xl font-bold text-text-primary mb-6 text-center">
-          Entrar
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-card space-y-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-primary mb-2">Bem-vindo</h1>
+          <p className="text-text-secondary">Faça login para continuar</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Campo Email */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-text-secondary">
-              Email
-            </label>
-            <input
-              type="email"
+            <label className="text-sm font-medium mb-1 block">Email</label>
+            <input 
+              type="email" 
+              required 
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               placeholder="seu@email.com"
-              required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
             />
           </div>
+          
+          {/* Campo Senha */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-text-secondary">
-              Senha
-            </label>
-            <input
-              type="password"
-              placeholder="Sua senha"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <label className="text-sm font-medium mb-1 block">Senha</label>
+            <input 
+              type="password" 
+              required 
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              placeholder="******"
+              value={senha}
+              onChange={e => setSenha(e.target.value)}
             />
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full"
+
+          <div className="flex items-center justify-between">
+            <Link href="/recuperar-senha" className="text-sm text-primary hover:underline">
+              Esqueceu a senha?
+            </Link>
+          </div>
+
+          {/* Botão de Login */}
+          <button 
+            type="submit" 
+            disabled={loading} 
+            className={`w-full p-3 rounded-lg font-bold text-white transition-colors ${
+              loading ? 'bg-gray-400 cursor-not-allowed' : 'btn-primary hover:bg-green-700'
+            }`}
           >
-            {isLoading ? "Entrando..." : "Entrar"}
+            {loading ? 'Validando...' : 'Entrar'}
           </button>
         </form>
 
-        <p className="text-sm text-text-secondary text-center mt-6">
-          Não tem cadastro?{" "}
-          <Link
-            href="/cadastro"
-            className="text-primary font-medium hover:underline"
-          >
-            Clique aqui
-          </Link>
-          .
+        <p className="text-center text-sm text-text-secondary">
+          Não tem uma conta? <Link href="/cadastro" className="text-primary font-bold hover:underline">Cadastre-se</Link>
         </p>
       </div>
-      {/* --- FIM DO BLOCO CORRETO --- */}
     </div>
   );
 }

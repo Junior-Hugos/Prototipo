@@ -3,13 +3,24 @@ import prisma from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 
 export async function POST(req: Request) {
+  // --- TRAVA DE SEGURANÇA (BETA FECHADO) ---
+  // Se a variável ALLOW_REGISTRATION for 'false', bloqueia o cadastro.
+  // Sessão testada e funcional, apenas para controle de acesso.
+  if (process.env.ALLOW_REGISTRATION === 'false') {
+      return NextResponse.json(
+        { error: "O cadastro de novos usuários está temporariamente suspenso." },
+        { status: 403 } 
+      );
+  }
+  // -----------------------------------------
+
   try {
     const body = await req.json();
     const { 
-      nome, email, password, endereco, tipo, // Campos do Usuario
-      telefone, // Campo do Doador
-      disponibilidade, // Campo do Voluntario
-      cnpj, tipoMaterialAceito // Campos da Empresa
+      nome, email, password, endereco, tipo, 
+      telefone, 
+      disponibilidade, 
+      cnpj, tipoMaterialAceito 
     } = body;
 
     // 1. Validação
@@ -41,7 +52,7 @@ export async function POST(req: Request) {
       tipo, // "DOADOR", "VOLUNTARIO", "EMPRESA"
     };
 
-    // 5. Adicionar perfil aninhado com base no 'tipo'
+    // 5. Adicionar perfil com base no 'tipo'
     switch (tipo) {
       case "DOADOR":
         userData.doador = { create: { telefone: telefone || null } };
@@ -70,7 +81,7 @@ export async function POST(req: Request) {
         );
     }
 
-    // 6. Salvar no banco (cria Usuário e Perfil em uma transação)
+    // 6. Salvar no banco de dados
     const usuario = await prisma.usuario.create({
       data: userData,
     });
@@ -80,7 +91,6 @@ export async function POST(req: Request) {
     return NextResponse.json(userResult, { status: 201 });
 
   } catch (error) {
-    console.error("Erro ao criar usuário:", error);
     return NextResponse.json(
       { error: "Erro interno ao tentar criar usuário" },
       { status: 500 }
