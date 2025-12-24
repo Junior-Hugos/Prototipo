@@ -12,7 +12,7 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 
 ## 🎯 Objetivo e Impacto
 
-O projeto visa mitigar a falta de informação e infraestrutura acessível para a coleta seletiva[cite: 245]. A solução conecta os três atores principais do ciclo de reciclagem:
+O projeto visa mitigar a falta de informação e infraestrutura acessível para a coleta seletiva. A solução conecta os três atores principais do ciclo de reciclagem:
 
 1.  **Doadores:** Solicitam a coleta de materiais em suas residências.
 2.  **Voluntários:** Visualizam solicitações e realizam o transporte (logística reversa).
@@ -24,7 +24,7 @@ O projeto visa mitigar a falta de informação e infraestrutura acessível para 
 
 ## 📱 Destaques de UX/UI (Mobile First)
 
-Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **Aplicação Web Responsiva**:
+Conforme definido na inspeção de artefatos, a solução é uma **Aplicação Web Responsiva**:
 
 * **Navegação Nativa:** Barra de navegação inferior (*Bottom Tab Bar*) em dispositivos móveis e Sidebar em desktops.
 * **Design Adaptativo:** Layouts que se ajustam fluidamente entre telas de smartphones e monitores largos.
@@ -34,7 +34,7 @@ Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **A
 
 ## 🛠️ Stack Tecnológico
 
-A arquitetura foi definida para garantir escalabilidade, segurança e integridade de dados[cite: 1029, 1462]:
+A arquitetura foi definida para garantir escalabilidade, segurança e integridade de dados:
 
 * **Front-end:** [Next.js 14](https://nextjs.org/) (React) com App Router.
 * **Estilização:** [Tailwind CSS](https://tailwindcss.com/).
@@ -49,7 +49,7 @@ A arquitetura foi definida para garantir escalabilidade, segurança e integridad
 
 O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10:
 
-* **Proteção de Dados:** Hashing de senhas com `bcrypt` (Custo 12) e gestão rigorosa de variáveis de ambiente.
+* **Proteção de Dados:** Hashing de senhas com `bcrypt` e gestão rigorosa de variáveis de ambiente.
 * **Prevenção de Falhas:** Uso exclusivo do ORM para evitar SQL Injection.
 * **Controle de Acesso:** Middleware centralizado para proteção de rotas por perfil (Doador/Voluntário/Empresa).
 
@@ -62,7 +62,7 @@ O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10:
 
 ## 🚀 CI/CD e Deploy
 
-[cite_start]O ciclo de vida do software é automatizado[cite: 1023]:
+O ciclo de vida do software é automatizado:
 
 1.  **Integração Contínua (GitHub Actions):** Build, Linting, Testes Unitários e Scan de Vulnerabilidades (`npm audit`) a cada Push/PR.
 2.  **Entrega Contínua (Vercel):**
@@ -73,12 +73,12 @@ O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10:
 
 ## 🗄️ Modelagem de Dados
 
-O banco de dados relacional foi modelado para suportar a complexidade logística [cite: 420-425]:
+O banco de dados relacional foi modelado para suportar a complexidade logística:
 
 * **Entidade Base:** `Usuario` (Dados comuns: nome, email, senha).
 * **Perfis Específicos:** `Doador`, `Voluntario`, `Empresa` (Relacionamento 1:1 com Usuário).
 * **Transacional:** `Coleta` (Conecta Doador, Voluntário e Empresa).
-* **Associativa:** `Voluntario_Campanha` (Resolve a relação N:N entre voluntários e campanhas educativas)[cite: 155].
+* **Associativa:** `Voluntario_Campanha` (Resolve a relação N:N entre voluntários e campanhas educativas).
 
 ---
 
