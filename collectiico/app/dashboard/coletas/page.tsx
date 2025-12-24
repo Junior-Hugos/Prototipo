@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -138,29 +138,35 @@ export default function ColetasPage() {
 
   const getGoogleMapsLink = (coleta: any) => {
     const end = `${coleta.doador?.usuario?.endereco || ''} - ${coleta.doador?.usuario?.cidade || ''}`;
-    return `https://www.google.com/maps/dir/?api=1&destination=$?q=${encodeURIComponent(end)}`;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;
   };
 
-  if (loading) return <div className="p-10 text-center text-gray-500 font-medium">Carregando mural...</div>;
+  if (loading) return <div className="min-h-screen flex justify-center items-center text-green-600 font-bold text-lg">Carregando mural...</div>;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto font-sans relative">
-      <div className="flex justify-between items-end mb-8 border-b pb-4">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto font-sans relative pb-20">
+      
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 border-b pb-4 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Mural de Coletas</h1>
-          <p className="text-gray-500 mt-1">Gerencie suas coletas</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Mural de Coletas</h1>
+          <p className="text-gray-500 mt-1 text-sm md:text-base">Gerencie suas coletas e ajude o meio ambiente.</p>
         </div>
-        <button onClick={fetchColetas} className="bg-white border text-gray-600 px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-gray-50">
+        <button 
+          onClick={fetchColetas} 
+          className="w-full md:w-auto bg-white border text-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+        >
           ↻ Atualizar
         </button>
       </div>
 
       {visibleColetas.length === 0 ? (
-        <div className="py-24 bg-gray-50 rounded-2xl border-2 border-dashed text-center text-gray-400">
-          Nenhuma coleta disponível.
+        <div className="py-24 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center flex flex-col items-center justify-center">
+          <p className="text-gray-400 font-medium">Nenhuma coleta disponível.</p>
+          <p className="text-gray-400 text-sm mt-1">Que tal solicitar uma nova?</p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {visibleColetas.map((coleta) => {
             const isConcluida = coleta.status === 'CONCLUIDA';
             const isOwner = coleta.doador?.usuario?.id === user?.id;
@@ -174,69 +180,75 @@ export default function ColetasPage() {
             const statusLabel = isConcluida ? 'Concluída' : (coleta.status === 'SOLICITADA' ? 'Solicitada' : 'Em Andamento');
 
             return (
-              <div key={coleta.id} className={`bg-white rounded-xl shadow-sm border p-6 flex flex-col ${isConcluida ? 'opacity-75 bg-gray-50' : ''}`}>
+              <div key={coleta.id} className={`bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col transition-all hover:shadow-md ${isConcluida ? 'opacity-60 bg-gray-50' : ''}`}>
                 
-                {/* Header */}
-                <div className="flex justify-between mb-4">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                    statusLabel === 'Em Andamento' ? 'bg-blue-100 text-blue-800' : 
-                    statusLabel === 'Solicitada' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-200'
+                {/* Header do Card */}
+                <div className="flex justify-between items-start mb-4">
+                  <span className={`px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wide ${
+                    statusLabel === 'Em Andamento' ? 'bg-blue-100 text-blue-700' : 
+                    statusLabel === 'Solicitada' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-200 text-gray-600'
                   }`}>{statusLabel}</span>
-                  <div className="flex items-center text-xs text-gray-400">
+                  <div className="flex items-center text-xs text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded">
                     <CalendarIcon /> {new Date(coleta.data).toLocaleDateString('pt-BR')}
                   </div>
                 </div>
 
-                {/* Info */}
+                {/* Info Principal */}
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold capitalize">{coleta.tipoMaterial}</h3>
-                  <p className="text-gray-500 text-sm">Qtd: <strong>{coleta.quantidade}</strong></p>
+                  <h3 className="text-lg md:text-xl font-bold capitalize text-gray-800">{coleta.tipoMaterial}</h3>
+                  <p className="text-gray-500 text-sm mt-1">Quantidade: <strong className="text-gray-700">{coleta.quantidade}</strong></p>
                 </div>
-                <div className="border-t mb-4"></div>
-                <div className="mb-6 flex-1 text-sm">
-                  <p className="text-gray-800 font-bold">{coleta.doador?.usuario?.nome || 'Anônimo'}</p>
-                  <p className="text-gray-500 text-xs">{coleta.doador?.usuario?.endereco} - {coleta.doador?.usuario?.cidade}</p>
+                
+                <div className="border-t border-gray-100 mb-4"></div>
+                
+                <div className="mb-6 flex-1 text-sm space-y-1">
+                  <p className="text-gray-800 font-bold flex items-center gap-2">
+                    👤 {coleta.doador?.usuario?.nome || 'Anônimo'}
+                  </p>
+                  <p className="text-gray-500 text-xs leading-relaxed">
+                    📍 {coleta.doador?.usuario?.endereco} - {coleta.doador?.usuario?.cidade}
+                  </p>
                 </div>
 
-                {/* --- BOTÕES --- */}
+                {/* --- BOTÕES DE AÇÃO (Largura total no mobile) --- */}
                 <div className="pt-2 mt-auto">
                   {isConcluida ? (
-                    <div className="w-full py-2 bg-gray-100 text-gray-500 rounded-lg text-center text-sm font-bold flex justify-center gap-2">
+                    <div className="w-full py-2.5 bg-gray-100 text-gray-500 rounded-xl text-center text-sm font-bold flex justify-center gap-2 cursor-default">
                        <CheckIcon /> Finalizada
                     </div>
                   ) : (
                     <>
-                      {/* DOADOR */}
+                      {/* DOADOR (Dono da coleta) */}
                       {isOwner && (
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                            {(coleta.status === 'ACEITA' || coleta.status === 'EM_ANDAMENTO') && (
-                              <button onClick={() => openConfirmModal(coleta.id)} className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm flex justify-center items-center gap-1 hover:bg-blue-700">
+                              <button onClick={() => openConfirmModal(coleta.id)} className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-1 hover:bg-blue-700 shadow-sm transition-colors">
                                 <CheckIcon /> Confirmar
                               </button>
                            )}
-                           <button onClick={() => openDeleteModal(coleta.id, 'delete')} className="flex-1 bg-red-50 text-red-600 py-2 rounded-lg text-sm flex justify-center items-center gap-1 hover:bg-red-100">
+                           <button onClick={() => openDeleteModal(coleta.id, 'delete')} className="flex-1 bg-red-50 text-red-600 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-1 hover:bg-red-100 transition-colors">
                               <TrashIcon /> Excluir
                            </button>
                         </div>
                       )}
 
-                      {/* VOLUNTÁRIO/EMPRESA */}
+                      {/* VOLUNTÁRIO/EMPRESA (Aceitar Coleta) */}
                       {!isOwner && coleta.status === 'SOLICITADA' && (user.tipo !== 'DOADOR') && (
-                          <button onClick={() => handleAccept(coleta.id)} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm font-semibold">
+                          <button onClick={() => handleAccept(coleta.id)} className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 text-sm font-bold shadow-md transition-all active:scale-95">
                             Aceitar Coleta
                           </button>
                       )}
 
-                      {/* VOLUNTÁRIO/EMPRESA */}
+                      {/* VOLUNTÁRIO/EMPRESA (Gerenciar Coleta Aceita) */}
                       {isAcceptedByMe && (
-                        <div className="flex gap-2">
-                          <a href={getGoogleMapsLink(coleta)} target="_blank" className="flex-1 bg-green-600 text-white py-2 rounded-lg flex justify-center items-center gap-1 text-sm hover:bg-green-700">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <a href={getGoogleMapsLink(coleta)} target="_blank" className="flex-1 bg-green-600 text-white py-2.5 rounded-xl flex justify-center items-center gap-1 text-sm font-bold hover:bg-green-700 shadow-sm transition-colors">
                             <MapIcon /> Rota
                           </a>
-                          <button onClick={() => openConfirmModal(coleta.id)} className="flex-1 bg-blue-600 text-white py-2 rounded-lg flex justify-center items-center gap-1 text-sm hover:bg-blue-700">
+                          <button onClick={() => openConfirmModal(coleta.id)} className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl flex justify-center items-center gap-1 text-sm font-bold hover:bg-blue-700 shadow-sm transition-colors">
                             <CheckIcon /> Confirmar
                           </button>
-                          <button onClick={() => openDeleteModal(coleta.id, 'release')} className="w-10 border border-red-200 text-red-500 rounded-lg flex justify-center items-center hover:bg-red-50" title="Cancelar">
+                          <button onClick={() => openDeleteModal(coleta.id, 'release')} className="w-full sm:w-12 border border-red-200 text-red-500 rounded-xl flex justify-center items-center hover:bg-red-50 transition-colors py-2.5 sm:py-0" title="Cancelar / Liberar">
                             <XIcon />
                           </button>
                         </div>
@@ -250,26 +262,26 @@ export default function ColetasPage() {
         </div>
       )}
 
-      {/* --- MODAIS --- */}
+      {/* --- MODAIS RESPONSIVOS --- */}
       {(deleteModalOpen || confirmModalOpen) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full text-center animate-in zoom-in-95 duration-200">
             {deleteModalOpen ? <AlertIcon /> : <SuccessIcon />}
-            <h3 className="text-lg font-bold mb-2 text-gray-800">
+            <h3 className="text-xl font-bold mb-2 text-gray-800">
                 {deleteModalOpen 
                   ? (actionType === 'delete' ? 'Excluir Solicitação?' : 'Cancelar Coleta?') 
                   : 'Confirmar Coleta?'}
             </h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-600 mb-6 px-2 leading-relaxed">
                 {deleteModalOpen 
-                  ? (actionType === 'delete' ? 'Apagar permanentemente?' : 'A coleta voltará para o mural.') 
-                  : 'Confirma que a coleta foi realizada?'}
+                  ? (actionType === 'delete' ? 'Esta ação não pode ser desfeita.' : 'A coleta voltará para o mural de disponíveis.') 
+                  : 'Confirma que a coleta foi realizada e o material recolhido?'}
             </p>
             <div className="flex gap-3">
-              <button onClick={() => { setDeleteModalOpen(false); setConfirmModalOpen(false); }} className="flex-1 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Cancelar</button>
+              <button onClick={() => { setDeleteModalOpen(false); setConfirmModalOpen(false); }} className="flex-1 py-3 bg-gray-100 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors">Cancelar</button>
               <button 
                 onClick={deleteModalOpen ? executeDeleteOrRelease : executeConcluir} 
-                className={`flex-1 py-2 text-white rounded-lg text-sm ${deleteModalOpen ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
+                className={`flex-1 py-3 text-white rounded-xl text-sm font-bold shadow-md transition-colors ${deleteModalOpen ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
               >
                 Confirmar
               </button>

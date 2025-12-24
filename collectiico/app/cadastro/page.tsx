@@ -69,214 +69,211 @@ export default function CadastroPage() {
     }
   };
 
+  // Classe padrão para inputs para manter consistência
+  const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all bg-gray-50 focus:bg-white";
+  const labelClass = "block text-sm font-bold text-gray-700 mb-1.5";
+
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12 relative">
-      <h2 className="text-3xl font-bold text-text-primary mb-2 text-center">
-        Tela de Cadastro
-      </h2>
-      <p className="text-text-secondary mb-8 text-center">
-        Crie sua conta para começar a reciclar.
-      </p>
-
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-8 rounded-2xl shadow-card"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label htmlFor="nome" className="block text-sm font-medium mb-1">
-              Nome Completo
-            </label>
-            <input
-              id="nome"
-              type="text"
-              required
-              value={formData.nome}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium mb-1"
-            >
-              Senha
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="endereco"
-              className="block text-sm font-medium mb-1"
-            >
-              Endereço Principal
-            </label>
-            <input
-              id="endereco"
-              type="text"
-              value={formData.endereco}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-
-        <hr className="border-border-light" />
-
-        <div>
-          <label htmlFor="tipo" className="block text-sm font-medium mb-1">
-            Eu sou...
-          </label>
-          <select
-            id="tipo"
-            required
-            value={formData.tipo}
-            onChange={handleChange}
-            className="w-full p-2 border rounded bg-white"
-          >
-            <option value="DOADOR">Doador (Quero solicitar coletas)</option>
-            <option value="VOLUNTARIO">
-              Voluntário (Quero realizar coletas)
-            </option>
-            <option value="EMPRESA">
-              Cooperativa / Empresa (Quero receber materiais)
-            </option>
-          </select>
-        </div>
-
-        {/* Campos de Perfil Dinâmicos */}
-        {formData.tipo === "DOADOR" && (
-          <div>
-            <label
-              htmlFor="telefone"
-              className="block text-sm font-medium mb-1"
-            >
-              Telefone (Opcional)
-            </label>
-            <input
-              id="telefone"
-              type="tel"
-              placeholder="(99) 99999-9999"
-              value={formData.telefone}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        )}
-
-        {formData.tipo === "VOLUNTARIO" && (
-          <div>
-            <label
-              htmlFor="disponibilidade"
-              className="block text-sm font-medium mb-1"
-            >
-              Disponibilidade (Opcional)
-            </label>
-            <input
-              id="disponibilidade"
-              type="text"
-              placeholder="Ex: Finais de semana, Manhãs de Seg/Qua"
-              value={formData.disponibilidade}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        )}
-
-        {formData.tipo === "EMPRESA" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label htmlFor="cnpj" className="block text-sm font-medium mb-1">
-                CNPJ (Obrigatório)
-              </label>             
-              <input
-                id="cnpj"
-                type="text"
-                required
-                value={formData.cnpj}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="tipoMaterialAceito"
-                className="block text-sm font-medium mb-1"
-              >
-                Material que Aceita (Opcional)
-              </label>
-              <input
-                id="tipoMaterialAceito"
-                type="text"
-                placeholder="Ex: Papelão, Vidro"
-                value={formData.tipoMaterialAceito}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Submit */}
-        <div className="flex flex-col gap-3 pt-4">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full p-3 rounded text-white font-bold"
-          >
-            {isLoading ? "Processando..." : "Criar minha conta"}
-          </button>
-          <p className="text-sm text-text-secondary text-center">
-            Já tem conta?{" "}
-            <Link
-              href="/login"
-              className="text-primary font-medium hover:underline"
-            >
-              Faça login
-            </Link>
-            .
+    <div className="min-h-screen bg-gray-50 py-8 md:py-12 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+      <div className="max-w-3xl w-full space-y-8">
+        
+        {/* Cabeçalho */}
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Crie sua conta
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Junte-se ao Collectiico e comece a transformar o mundo hoje.
           </p>
         </div>
-      </form>
 
-      {/* --- MODAL DE BLOQUEIO (BETA FECHADO) --- */}
+        {/* Card do Formulário */}
+        <div className="bg-white py-8 px-6 shadow-xl rounded-2xl sm:px-10 border border-gray-100">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Grid Principal: 1 Coluna no Mobile, 2 no Desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Nome */}
+              <div className="col-span-1">
+                <label htmlFor="nome" className={labelClass}>Nome Completo</label>
+                <input
+                  id="nome"
+                  type="text"
+                  required
+                  value={formData.nome}
+                  onChange={handleChange}
+                  className={inputClass}
+                  placeholder="Seu nome"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="col-span-1">
+                <label htmlFor="email" className={labelClass}>Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={inputClass}
+                  placeholder="seu@email.com"
+                />
+              </div>
+
+              {/* Senha */}
+              <div className="col-span-1">
+                <label htmlFor="password" className={labelClass}>Senha</label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={inputClass}
+                  placeholder="******"
+                />
+              </div>
+
+              {/* Endereço */}
+              <div className="col-span-1">
+                <label htmlFor="endereco" className={labelClass}>Endereço Principal</label>
+                <input
+                  id="endereco"
+                  type="text"
+                  value={formData.endereco}
+                  onChange={handleChange}
+                  className={inputClass}
+                  placeholder="Rua, Número - Bairro"
+                />
+              </div>
+            </div>
+
+            <hr className="border-gray-200 my-6" />
+
+            {/* Tipo de Usuário */}
+            <div>
+              <label htmlFor="tipo" className={labelClass}>Eu sou...</label>
+              <select
+                id="tipo"
+                required
+                value={formData.tipo}
+                onChange={handleChange}
+                className={`${inputClass} cursor-pointer`}
+              >
+                <option value="DOADOR">Doador (Quero solicitar coletas)</option>
+                <option value="VOLUNTARIO">Voluntário (Quero realizar coletas)</option>
+                <option value="EMPRESA">Cooperativa / Empresa (Quero receber materiais)</option>
+              </select>
+            </div>
+
+            {/* Campos Condicionais (Fundo levemente diferente para destaque) */}
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-300">
+                {formData.tipo === "DOADOR" && (
+                  <div>
+                    <label htmlFor="telefone" className={labelClass}>Telefone (WhatsApp)</label>
+                    <input
+                      id="telefone"
+                      type="tel"
+                      placeholder="(99) 99999-9999"
+                      value={formData.telefone}
+                      onChange={handleChange}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+
+                {formData.tipo === "VOLUNTARIO" && (
+                  <div>
+                    <label htmlFor="disponibilidade" className={labelClass}>Sua Disponibilidade</label>
+                    <input
+                      id="disponibilidade"
+                      type="text"
+                      placeholder="Ex: Finais de semana, Manhãs de Seg/Qua"
+                      value={formData.disponibilidade}
+                      onChange={handleChange}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+
+                {formData.tipo === "EMPRESA" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="cnpj" className={labelClass}>CNPJ (Obrigatório)</label>            
+                      <input
+                        id="cnpj"
+                        type="text"
+                        required
+                        value={formData.cnpj}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="00.000.000/0001-00"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="tipoMaterialAceito" className={labelClass}>Material Aceito</label>
+                      <input
+                        id="tipoMaterialAceito"
+                        type="text"
+                        placeholder="Ex: Papelão, Vidro, Plástico"
+                        value={formData.tipoMaterialAceito}
+                        onChange={handleChange}
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                )}
+            </div>
+
+            {/* Botão de Submit */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full flex justify-center py-3.5 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white transition-all transform hover:-translate-y-0.5 ${
+                  isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 hover:shadow-lg"
+                }`}
+              >
+                {isLoading ? "Criando conta..." : "Criar minha conta"}
+              </button>
+            </div>
+
+            {/* Link Login */}
+            <div className="text-center mt-4">
+              <p className="text-sm text-gray-600">
+                Já tem conta?{" "}
+                <Link
+                  href="/login"
+                  className="font-bold text-green-600 hover:text-green-500 hover:underline transition-colors"
+                >
+                  Faça login aqui
+                </Link>
+              </p>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      {/* --- MODAL DE BLOQUEIO --- */}
       {showBlockedModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center animate-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center animate-in zoom-in-95 duration-200 border-2 border-amber-100">
             <LockIcon />
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Cadastros Suspensos</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Cadastros Limitados</h3>
             <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-              No momento, o <strong>Collectiico</strong> está operando em modo de demonstração fechada para testes de estabilidade.
+              O <strong>Collectiico</strong> está em fase de demonstração fechada. O cadastro de novos usuários está temporariamente pausado.
             </p>
-            <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-6 text-xs text-amber-800">
-               Usuários convidados podem acessar usando as contas de demonstração fornecidas.
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-xs text-amber-800 font-medium">
+               Dica: Utilize as credenciais de teste fornecidas na documentação.
             </div>
             <button 
               onClick={() => setShowBlockedModal(false)}
-              className="w-full py-2.5 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+              className="w-full py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition-colors shadow-lg"
             >
-              Entendi
+              Entendi, obrigado
             </button>
           </div>
         </div>

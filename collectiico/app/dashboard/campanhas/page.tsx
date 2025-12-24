@@ -109,7 +109,7 @@ export default function CampanhasPage() {
       setProcessingId(targetId);
 
       try {
-            // PARTICIPAR
+           // PARTICIPAR
           if (actionType === 'join') {
              const res = await fetch(`/api/campanhas/${targetId}/join`, { method: 'POST' });
              
@@ -177,25 +177,25 @@ export default function CampanhasPage() {
   if (!user) return null;
 
   const podeCriar = user.tipo === 'VOLUNTARIO' || user.tipo === 'EMPRESA';
- const podeVerBotaoParticipar = user.tipo === 'VOLUNTARIO';
+  const podeVerBotaoParticipar = user.tipo === 'VOLUNTARIO';
 
   return (
     <div className="min-h-screen bg-gray-50 pb-10 font-sans relative text-gray-800">
 
-      {/* --- MODAL --- */}
+      {/* --- MODAL RESPONSIVO --- */}
       {modal.show && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full animate-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full animate-in zoom-in-95 duration-200 border border-gray-100">
             <div className="flex flex-col items-center text-center">
               {modal.iconType === 'warning' ? <AlertIcon /> : <SuccessIcon />}
-              <h3 className="text-xl font-bold text-gray-800 mb-2">{modal.title}</h3>
-              <p className="text-base text-gray-600 mb-6 leading-relaxed px-2">{modal.message}</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{modal.title}</h3>
+              <p className="text-sm text-gray-600 mb-6 leading-relaxed px-2">{modal.message}</p>
               
               <div className="flex gap-3 w-full">
-                <button onClick={closeModal} className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors text-base">
+                <button onClick={closeModal} className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors text-sm">
                   Cancelar
                 </button>
-                <button onClick={confirmAction} className={`flex-1 px-4 py-3 text-white font-medium rounded-xl transition-colors text-base ${
+                <button onClick={confirmAction} className={`flex-1 px-4 py-3 text-white font-bold rounded-xl transition-colors text-sm shadow-md ${
                   modal.confirmColor === 'red' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
                 }`}>
                   {modal.confirmText}
@@ -206,7 +206,7 @@ export default function CampanhasPage() {
         </div>
       )}
 
-      <main className="max-w-6xl mx-auto px-6 space-y-8 pt-8">
+      <main className="max-w-6xl mx-auto px-4 md:px-6 space-y-8 pt-8">
 
         {/* --- FORMULÁRIO DE CRIAÇÃO --- */}
         {podeCriar && (
@@ -224,10 +224,12 @@ export default function CampanhasPage() {
                             required
                             className="flex-1 p-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
                         />
+                        
+                        
                         <button 
                             type="submit" 
                             disabled={creating}
-                            className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-green-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+                            className="w-full md:w-auto bg-green-600 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-green-700 transition-colors disabled:opacity-50 whitespace-nowrap shadow-sm"
                         >
                             {creating ? 'Publicando...' : 'Publicar'}
                         </button>
@@ -238,7 +240,7 @@ export default function CampanhasPage() {
                         onChange={e => setNovaDescricao(e.target.value)}
                         required
                         rows={3}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-green-500 transition-all resize-none"
                     />
                 </form>
             </section>
@@ -247,17 +249,17 @@ export default function CampanhasPage() {
         {/* --- LISTA UNIFICADA --- */}
         <section>
             <div className="flex items-center justify-between mb-4 px-1">
-                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-3">
                     Mural de Campanhas
                 </h2>
-                <span className="bg-blue-50 text-blue-700 text-sm font-bold px-3 py-1 rounded-full border border-blue-100">
+                <span className="bg-blue-50 text-blue-700 text-xs md:text-sm font-bold px-3 py-1 rounded-full border border-blue-100">
                     {todasCampanhas.length} Ativas
                 </span>
             </div>
 
-            <div className="grid grid-cols-1 gap-5">
+            <div className="grid grid-cols-1 gap-4 md:gap-5">
                 {todasCampanhas.length === 0 && (
-                    <p className="text-gray-500 italic text-base text-center py-12 bg-white rounded-2xl shadow-sm border border-dashed border-gray-200">
+                    <p className="text-gray-500 italic text-sm md:text-base text-center py-12 bg-white rounded-2xl shadow-sm border border-dashed border-gray-200">
                         Nenhuma campanha encontrada no momento.
                     </p>
                 )}
@@ -271,27 +273,28 @@ export default function CampanhasPage() {
                     const cardOpacity = camp.concluida ? "opacity-60 bg-gray-50" : "bg-white";
 
                     return (
-                        <div key={camp.id} className={`${cardOpacity} p-6 rounded-2xl shadow-sm border border-gray-100 transition-all hover:shadow-md`}>
+                        <div key={camp.id} className={`${cardOpacity} p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 transition-all hover:shadow-md`}>        
                             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
                                 
-                                <div className="flex-1 min-w-0 space-y-2">
-                                    <div className="flex items-center gap-3 mb-1">
-                                        <h3 className={`font-bold text-xl ${tituloClass}`}>{camp.titulo}</h3>
-                                        {souDono && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded-lg border border-purple-200 font-bold uppercase tracking-wide">Sua Campanha</span>}
-                                        {participo && !souDono && <span className="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-lg border border-green-200 font-bold uppercase tracking-wide">Inscrito</span>}
+                                <div className="flex-1 min-w-0 space-y-2 w-full">
+                                    <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
+                                        <h3 className={`font-bold text-lg md:text-xl ${tituloClass}`}>{camp.titulo}</h3>
+                                        {souDono && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200 font-bold uppercase tracking-wide">Sua Campanha</span>}
+                                        {participo && !souDono && <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-200 font-bold uppercase tracking-wide">Inscrito</span>}
                                     </div>
                                     <p className={`text-sm leading-relaxed ${descClass}`}>{camp.descricao}</p>
                                     
-                                    <div className="flex items-center gap-4 text-xs text-gray-500 font-medium pt-2">
-                                        <span className="flex items-center gap-1">📅 {formatDate(camp.dataPublicacao)}</span>
-                                        <span className="flex items-center gap-1 text-gray-700 bg-gray-100 px-2 py-1 rounded-md">
+                                    <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 font-medium pt-2">
+                                        <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">📅 {formatDate(camp.dataPublicacao)}</span>
+                                        <span className="flex items-center gap-1 text-gray-700 bg-gray-100 px-2 py-1 rounded">
                                             👥 {camp._count?.voluntarios || 0} confirmados
                                         </span>
                                         <span className="hidden sm:inline">👤 Criado por: {camp.criador?.nome}</span>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
+                                {/* Botões de Ação */}
+                                <div className="flex flex-col sm:flex-row items-stretch gap-2 w-full md:w-auto mt-2 md:mt-0">
                                     {souDono ? (
                                         <>
                                             <button
@@ -300,9 +303,9 @@ export default function CampanhasPage() {
                                                     confirmText: "Excluir", confirmColor: "red", iconType: "warning", actionType: "deleteCampaign", targetId: camp.id
                                                 })}
                                                 disabled={processingId === camp.id}
-                                                className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold transition-colors flex items-center gap-2"
+                                                className="justify-center px-4 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 w-full md:w-auto"
                                             >
-                                                <TrashIcon />
+                                                <TrashIcon /> <span className="md:hidden">Excluir</span>
                                             </button>
                                             <button
                                                 onClick={() => setModal({
@@ -310,13 +313,13 @@ export default function CampanhasPage() {
                                                     confirmText: "Concluir", confirmColor: "green", iconType: "success", actionType: "finishCampaign", targetId: camp.id
                                                 })}
                                                 disabled={processingId === camp.id || camp.concluida}
-                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 ${
+                                                className={`justify-center px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 w-full md:w-auto ${
                                                     camp.concluida 
                                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                                                     : 'bg-green-50 text-green-600 hover:bg-green-100'
                                                 }`}
                                             >
-                                                <CheckIcon /> Finalizar
+                                                <CheckIcon /> {camp.concluida ? 'Concluída' : 'Finalizar'}
                                             </button>
                                         </>
                                     ) : (
@@ -328,7 +331,7 @@ export default function CampanhasPage() {
                                                         confirmText: "Sair", confirmColor: "red", iconType: "warning", actionType: "leave", targetId: camp.id
                                                     })}
                                                     disabled={processingId === camp.id}
-                                                    className="w-full md:w-auto bg-white border border-red-200 text-red-600 hover:bg-red-50 px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm"
+                                                    className="w-full md:w-auto justify-center bg-white border border-red-200 text-red-600 hover:bg-red-50 px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center"
                                                 >
                                                     {processingId === camp.id ? '...' : 'Cancelar Inscrição'}
                                                 </button>
@@ -339,7 +342,7 @@ export default function CampanhasPage() {
                                                         confirmText: "Confirmar", confirmColor: "green", iconType: "success", actionType: "join", targetId: camp.id
                                                     })}
                                                     disabled={processingId === camp.id || camp.concluida}
-                                                    className={`w-full md:w-auto px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all ${
+                                                    className={`w-full md:w-auto justify-center px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center ${
                                                         camp.concluida
                                                         ? 'bg-gray-300 text-white cursor-not-allowed'
                                                         : 'bg-green-600 text-white hover:bg-green-700 active:scale-95'

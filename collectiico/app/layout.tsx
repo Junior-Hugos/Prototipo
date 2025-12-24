@@ -11,6 +11,8 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Collectiico",
   description: "Coleta inteligente de recicláveis",
+  // Garante que o site escale corretamente no celular (evita zoom indesejado)
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({
@@ -21,9 +23,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${inter.className} bg-gray-50 text-gray-800 min-h-screen flex flex-col`}>
-        {/* AuthProvider envolve toda a aplicação */}
+        {/* AuthProvider envolve toda a aplicação para sessão funcionar no Header */}
         <AuthProvider>
+          
           <Header />
+          
+          {/* Notificações configuradas */}
           <Toaster 
             position="top-right" 
             toastOptions={{
@@ -31,6 +36,7 @@ export default function RootLayout({
               style: {
                 background: '#333',
                 color: '#fff',
+                fontSize: '14px', // Ajuste para leitura mobile
               },
               success: {
                 style: {
@@ -44,8 +50,14 @@ export default function RootLayout({
               },
             }} 
           />
-          <main className="flex-1">{children}</main>
+
+          {/* flex-1 garante que o conteúdo ocupe o espaço disponível, empurrando o footer para baixo */}
+          <main className="flex-1 w-full">
+             {children}
+          </main>
+
           <Footer />
+
         </AuthProvider>
       </body>
     </html>
