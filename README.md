@@ -18,13 +18,13 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 2.  **Voluntários:** Visualizam solicitações e realizam o transporte (logística reversa).
 3.  **Empresas/Cooperativas:** Recebem os materiais e validam o processo.
 
-[cite_start]**Impacto Esperado:** Otimização logística, aumento do engajamento comunitário e redução estimada de 0,06 toneladas de CO₂ por semestre através da otimização de viagens[cite: 993].
+**Impacto Esperado:** Otimização logística, aumento do engajamento comunitário e redução estimada de 0,06 toneladas de CO₂ por semestre através da otimização de viagens.
 
 ---
 
 ## 📱 Destaques de UX/UI (Mobile First)
 
-[cite_start]Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **Aplicação Web Responsiva**:
+Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **Aplicação Web Responsiva**:
 
 * **Navegação Nativa:** Barra de navegação inferior (*Bottom Tab Bar*) em dispositivos móveis e Sidebar em desktops.
 * **Design Adaptativo:** Layouts que se ajustam fluidamente entre telas de smartphones e monitores largos.
@@ -41,8 +41,7 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 * **Back-end:** Next.js API Routes (Serverless).
 * **Banco de Dados:** [PostgreSQL](https://www.postgresql.org/) (Hospedado na Neon/Docker).
 * **ORM:** [Prisma](https://www.prisma.io/) (Garantia de *Type-Safety* e Migrations).
-* [cite_start]**Validação:** Zod (Schema Validation)[cite: 1522].
-* [cite_start]**Autenticação:** JWT (JSON Web Tokens) em Cookies HttpOnly[cite: 1506].
+* **Autenticação:** JWT (JSON Web Tokens) em Cookies HttpOnly.
 
 ---
 
@@ -51,10 +50,10 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 [cite_start]O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10[cite: 1459]:
 
 * **Proteção de Dados:** Hashing de senhas com `bcrypt` (Custo 12) e gestão rigorosa de variáveis de ambiente.
-* [cite_start]**Prevenção de Falhas:** Uso exclusivo do ORM para evitar SQL Injection[cite: 1499].
+* **Prevenção de Falhas:** Uso exclusivo do ORM para evitar SQL Injection.
 * **Controle de Acesso:** Middleware centralizado para proteção de rotas por perfil (Doador/Voluntário/Empresa).
 
-### [cite_start]Estratégia de Testes [cite: 1176]
+### Estratégia de Testes
 * **Unitários:** Jest e React Testing Library.
 * **Integração:** Validação de API com banco de dados de teste (Docker).
 * **E2E (End-to-End):** Cypress para simulação de fluxos críticos de usuário.
@@ -74,12 +73,12 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 
 ## 🗄️ Modelagem de Dados
 
-[cite_start]O banco de dados relacional foi modelado para suportar a complexidade logística [cite: 420-425]:
+O banco de dados relacional foi modelado para suportar a complexidade logística [cite: 420-425]:
 
 * **Entidade Base:** `Usuario` (Dados comuns: nome, email, senha).
 * **Perfis Específicos:** `Doador`, `Voluntario`, `Empresa` (Relacionamento 1:1 com Usuário).
 * **Transacional:** `Coleta` (Conecta Doador, Voluntário e Empresa).
-* [cite_start]**Associativa:** `Voluntario_Campanha` (Resolve a relação N:N entre voluntários e campanhas educativas)[cite: 155].
+* **Associativa:** `Voluntario_Campanha` (Resolve a relação N:N entre voluntários e campanhas educativas)[cite: 155].
 
 ---
 
@@ -116,7 +115,7 @@ Pré-requisitos: Node.js (v18+) e Docker (opcional, para DB local).
 
 ## 👥 Equipe de Desenvolvimento
 
-[cite_start]Projeto desenvolvido pelos acadêmicos do Curso Superior de Tecnologia em TI (UFMS) [cite: 8-13]:
+Projeto desenvolvido pelos acadêmicos do Curso Superior de Tecnologia em TI (UFMS):
 
 * **João Paulo da Silva Moreira**
 * **Edmilson Figueiredo Santos Junior**
