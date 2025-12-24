@@ -10,6 +10,25 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 
 ---
 
+## 🌐 Demonstração Online
+
+O sistema está implantado e rodando em produção na Vercel. Você pode acessar e testar agora mesmo:
+
+🔗 **Acesse o Sistema:** [https://prototipo-amber.vercel.app/](https://prototipo-amber.vercel.app/)
+
+### 🔐 Credenciais de Acesso
+> **⚠️ Atenção:** O cadastro de novos usuários encontra-se **bloqueado**. Utilize as contas de demonstração abaixo para explorar os diferentes perfis do sistema:
+
+|       Email           |   Senha  |       Perfil        |
+|       :---            |  :---    |        :---         |
+| `francisco@gmail.com` | `123456` | Usuário Doador      |
+| `maria@gmail.com`     | `123456` | Usuário Voluntário  |
+| `recicler@gmail.com`  | `123456` | Cooperativa/Empresa |
+| `cooper@gmail.com`    | `12345`  | Cooperativa/Empresa |
+
+
+---
+
 ## 🎯 Objetivo e Impacto
 
 O projeto visa mitigar a falta de informação e infraestrutura acessível para a coleta seletiva. A solução conecta os três atores principais do ciclo de reciclagem:
