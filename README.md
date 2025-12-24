@@ -1,46 +1,136 @@
-# Sistema de Coleta Inteligente
+# ♻️ Collectiico
 
-Sistema completo para gerenciamento de coleta de materiais recicláveis, conectando doadores, voluntários e cooperativas.
+> **Otimização de Rotas e Logística Inteligente para Coleta de Recicláveis.**
 
-## 🚀 Funcionalidades
+O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile-First*) desenvolvida como Projeto de Extensão Universitária. O objetivo é solucionar o problema do descarte inadequado de resíduos em **Campo Grande - MS**, criando uma ponte tecnológica entre Doadores, Voluntários e Cooperativas.
 
-- **Sistema de Autenticação** com múltiplos perfis (Doador, Voluntário, Cooperativa)
-- **Gestão de Coletas** - Solicitação e acompanhamento de coletas
-- **Sistema de Campanhas** - Criação e participação em campanhas
-- **Interface Responsiva** - Design moderno e compativel
+![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-green)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions_%26_Vercel-blue)
+![Security](https://img.shields.io/badge/Security-OWASP_Top_10-red)
 
+---
 
-## Getting Started
+## 🎯 Objetivo e Impacto
 
-First, run the development server:
+[cite_start]O projeto visa mitigar a falta de informação e infraestrutura acessível para a coleta seletiva[cite: 245]. A solução conecta os três atores principais do ciclo de reciclagem:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Doadores:** Solicitam a coleta de materiais em suas residências.
+2.  **Voluntários:** Visualizam solicitações e realizam o transporte (logística reversa).
+3.  **Empresas/Cooperativas:** Recebem os materiais e validam o processo.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[cite_start]**Impacto Esperado:** Otimização logística, aumento do engajamento comunitário e redução estimada de 0,06 toneladas de CO₂ por semestre através da otimização de viagens[cite: 993].
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📱 Destaques de UX/UI (Mobile First)
 
-## Learn More
+[cite_start]Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **Aplicação Web Responsiva**:
 
-To learn more about Next.js, take a look at the following resources:
+* **Navegação Nativa:** Barra de navegação inferior (*Bottom Tab Bar*) em dispositivos móveis e Sidebar em desktops.
+* **Design Adaptativo:** Layouts que se ajustam fluidamente entre telas de smartphones e monitores largos.
+* **Acessibilidade:** Botões e inputs dimensionados para interação por toque.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Stack Tecnológico
 
-## Deploy on Vercel
+[cite_start]A arquitetura foi definida para garantir escalabilidade, segurança e integridade de dados[cite: 1029, 1462]:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **Front-end:** [Next.js 14](https://nextjs.org/) (React) com App Router.
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/).
+* **Back-end:** Next.js API Routes (Serverless).
+* **Banco de Dados:** [PostgreSQL](https://www.postgresql.org/) (Hospedado na Neon/Docker).
+* **ORM:** [Prisma](https://www.prisma.io/) (Garantia de *Type-Safety* e Migrations).
+* [cite_start]**Validação:** Zod (Schema Validation)[cite: 1522].
+* [cite_start]**Autenticação:** JWT (JSON Web Tokens) em Cookies HttpOnly[cite: 1506].
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔒 Segurança e Qualidade (DevSecOps)
+
+[cite_start]O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10[cite: 1459]:
+
+* **Proteção de Dados:** Hashing de senhas com `bcrypt` (Custo 12) e gestão rigorosa de variáveis de ambiente.
+* [cite_start]**Prevenção de Falhas:** Uso exclusivo do ORM para evitar SQL Injection[cite: 1499].
+* **Controle de Acesso:** Middleware centralizado para proteção de rotas por perfil (Doador/Voluntário/Empresa).
+
+### [cite_start]Estratégia de Testes [cite: 1176]
+* **Unitários:** Jest e React Testing Library.
+* **Integração:** Validação de API com banco de dados de teste (Docker).
+* **E2E (End-to-End):** Cypress para simulação de fluxos críticos de usuário.
+
+---
+
+## 🚀 CI/CD e Deploy
+
+[cite_start]O ciclo de vida do software é automatizado[cite: 1023]:
+
+1.  **Integração Contínua (GitHub Actions):** Build, Linting, Testes Unitários e Scan de Vulnerabilidades (`npm audit`) a cada Push/PR.
+2.  **Entrega Contínua (Vercel):**
+    * *Preview Deployments:* Ambientes de teste gerados automaticamente para cada Pull Request.
+    * *Production:* Deploy automático na branch `main` após aprovação nos testes.
+
+---
+
+## 🗄️ Modelagem de Dados
+
+[cite_start]O banco de dados relacional foi modelado para suportar a complexidade logística [cite: 420-425]:
+
+* **Entidade Base:** `Usuario` (Dados comuns: nome, email, senha).
+* **Perfis Específicos:** `Doador`, `Voluntario`, `Empresa` (Relacionamento 1:1 com Usuário).
+* **Transacional:** `Coleta` (Conecta Doador, Voluntário e Empresa).
+* [cite_start]**Associativa:** `Voluntario_Campanha` (Resolve a relação N:N entre voluntários e campanhas educativas)[cite: 155].
+
+---
+
+## 🔧 Como Rodar Localmente
+
+Pré-requisitos: Node.js (v18+) e Docker (opcional, para DB local).
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/Junior-Hugos/Prototipo.git](https://github.com/Junior-Hugos/Prototipo.git)
+    cd Prototipo
+    ```
+
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configure o ambiente:**
+    Crie um arquivo `.env` na raiz baseado no exemplo e adicione sua `DATABASE_URL` (PostgreSQL).
+
+4.  **Sincronize o Banco de Dados:**
+    ```bash
+    npx prisma migrate dev
+    ```
+
+5.  **Rode o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
+    Acesse `http://localhost:3000`.
+
+---
+
+## 👥 Equipe de Desenvolvimento
+
+[cite_start]Projeto desenvolvido pelos acadêmicos do Curso Superior de Tecnologia em TI (UFMS) [cite: 8-13]:
+
+* **João Paulo da Silva Moreira**
+* **Edmilson Figueiredo Santos Junior**
+* **Rodrigo Miyashiro**
+* **Lourival José Soares Junior**
+* **Raphael Neves Ferreira**
+
+---
+
+## 📄 Licença e Referências
+
+Este projeto acadêmico baseia-se nas diretrizes da **Política Nacional de Resíduos Sólidos (Lei nº 12.305/2010)** e nas melhores práticas de Engenharia de Software (Pressman & Sommerville).
+
+---
+<p align="center">
+  Desenvolvido com 💚 para um futuro mais sustentável.
+</p>
