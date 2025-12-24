@@ -73,9 +73,8 @@ O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10:
 * **Controle de Acesso:** Middleware centralizado para proteção de rotas por perfil (Doador/Voluntário/Empresa).
 
 ### Estratégia de Testes
-* **Unitários:** Jest e React Testing Library.
-* **Integração:** Validação de API com banco de dados de teste (Docker).
-* **E2E (End-to-End):** Cypress para simulação de fluxos críticos de usuário.
+* **Unitários:** React Testing.
+* **Integração:** Validação de API com banco de dados em teste.
 
 ---
 
