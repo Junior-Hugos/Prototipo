@@ -131,6 +131,28 @@ Pré-requisitos: Node.js (v18+) e Docker (opcional, para DB local).
 
 ---
 
+## 🎨 Galeria do Projeto
+
+Confira a interface do sistema, projetada para ser responsiva (Web e Mobile):
+
+### 💻 Versão Web (Desktop)
+<div align="center">
+  <img src="![home web](https://github.com/user-attachments/assets/e6248693-c3fa-4b12-ac47-522541f01e08)
+" width="800" alt="Tela de Cadastro" />
+  <p><em>Tela Inicial: Conectando doadores e cooperativas de forma simples.</em></p>
+</div>
+
+<br />
+
+
+### 📱 Versão Mobile (PWA)
+| **Cadastro de Usuário** | **Dashboard** |
+|:---:|:---:|
+| <img src="./assets/tela-cadastro.png" width="250" alt="Tela de Cadastro" /> | <img src="./assets/tela-dashboard.png" width="250" alt="Dashboard" /> |
+| *Formulário simplificado* | *Acesso rápido às coletas* |
+
+---
+
 ## 👥 Equipe de Desenvolvimento
 
 Projeto desenvolvido pelos acadêmicos do Curso Superior de Tecnologia em TI (UFMS):
