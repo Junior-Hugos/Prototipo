@@ -12,7 +12,7 @@ O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile
 
 ## 🎯 Objetivo e Impacto
 
-[cite_start]O projeto visa mitigar a falta de informação e infraestrutura acessível para a coleta seletiva[cite: 245]. A solução conecta os três atores principais do ciclo de reciclagem:
+O projeto visa mitigar a falta de informação e infraestrutura acessível para a coleta seletiva[cite: 245]. A solução conecta os três atores principais do ciclo de reciclagem:
 
 1.  **Doadores:** Solicitam a coleta de materiais em suas residências.
 2.  **Voluntários:** Visualizam solicitações e realizam o transporte (logística reversa).
@@ -34,7 +34,7 @@ Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **A
 
 ## 🛠️ Stack Tecnológico
 
-[cite_start]A arquitetura foi definida para garantir escalabilidade, segurança e integridade de dados[cite: 1029, 1462]:
+A arquitetura foi definida para garantir escalabilidade, segurança e integridade de dados[cite: 1029, 1462]:
 
 * **Front-end:** [Next.js 14](https://nextjs.org/) (React) com App Router.
 * **Estilização:** [Tailwind CSS](https://tailwindcss.com/).
@@ -47,7 +47,7 @@ Conforme definido na inspeção de artefatos[cite: 1407], a solução é uma **A
 
 ## 🔒 Segurança e Qualidade (DevSecOps)
 
-[cite_start]O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10[cite: 1459]:
+O projeto segue um **Plano de Desenvolvimento Seguro** baseado no OWASP Top 10:
 
 * **Proteção de Dados:** Hashing de senhas com `bcrypt` (Custo 12) e gestão rigorosa de variáveis de ambiente.
 * **Prevenção de Falhas:** Uso exclusivo do ORM para evitar SQL Injection.
