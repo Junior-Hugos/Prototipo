@@ -1,10 +1,29 @@
-# ♻️ Collectiico
+
+<h1 align="center">♻️ Collectiico</h1>
+
+<p align="center"><b>Otimização de Rotas e Logística Inteligente para Coleta de Recicláveis.</b></p>
+</br>
+
+
+<p align="center">
+   <img alt="Next.js" src="https://img.shields.io/badge/Next.js-18-000?logo=nextdotjs&logoColor=white&style=flat-square" />
+   <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square" />
+   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white&style=flat-square" />
+   <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?logo=tailwindcss&logoColor=white&style=flat-square" />
+   <img alt="Lucide" src="https://img.shields.io/badge/Lucide-React-000?logo=lucide&logoColor=white&style=flat-square" />
+</p>
+
+---
+
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/Junior-Hugos/Projeto-Site/blob/main/LICENSE)
+
+## ♻️ Collectiico
 
 > **Otimização de Rotas e Logística Inteligente para Coleta de Recicláveis.**
 
 O **Collectiico** é uma aplicação web progressiva (PWA) e responsiva (*Mobile-First*) desenvolvida como Projeto de Extensão Universitária. O objetivo é solucionar o problema do descarte inadequado de resíduos em **Campo Grande - MS**, criando uma ponte tecnológica entre Doadores, Voluntários e Cooperativas.
 
-![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-green)
+![Status](https://img.shields.io/badge/Status-Rodando_em_Produção-green)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions_%26_Vercel-blue)
 ![Security](https://img.shields.io/badge/Security-OWASP_Top_10-red)
 
@@ -136,20 +155,41 @@ Pré-requisitos: Node.js (v18+) e Docker (opcional, para DB local).
 Confira a interface do sistema, projetada para ser responsiva (Web e Mobile):
 
 ### 💻 Versão Web (Desktop)
-<div align="center">
-  <img src="![home web](https://github.com/user-attachments/assets/e6248693-c3fa-4b12-ac47-522541f01e08)
-" width="800" alt="Tela de Cadastro" />
-  <p><em>Tela Inicial: Conectando doadores e cooperativas de forma simples.</em></p>
-</div>
+
+#### **Tela Inicial**
+![home_web](https://github.com/user-attachments/assets/0c93a8a8-d737-4fab-ba69-7075ff86df20)
+
+#### **Tela Cadastro**
+![cadastro](https://github.com/user-attachments/assets/b4a253fb-2745-4fb5-a044-74f03d17761a)
+
+#### **Tela Login**
+![login](https://github.com/user-attachments/assets/757c88af-9d4c-4f69-a7f3-dd323ed63b4f)
+
+#### **Home Dashboard**
+![home_dashboard](https://github.com/user-attachments/assets/763cc653-1b64-4f79-bbd6-f31bfe8349e5)
+
+#### **Dashboard - Página Coletas**
+![coletas_page](https://github.com/user-attachments/assets/e63b1eb4-3cdf-43a3-9265-b1fe270b8eec)
+
+#### **Dashboard - Coletas**
+![mural_coleta](https://github.com/user-attachments/assets/ffd1631c-5caa-4b7c-b487-71e19c3708a6)
+
+#### **Dashboard - Solicitar**
+![solicitar_coleta](https://github.com/user-attachments/assets/b8174b43-6bba-4a72-b0f8-3750a09949d6)
+
+#### **Dashboard - Campanhas**
+![campanha_page](https://github.com/user-attachments/assets/6ed051bd-a76a-4369-8906-970191bcb3f9)
+
+#### **Dashboard - Configurações**
+![Settings_page](https://github.com/user-attachments/assets/d026c475-9702-451b-a735-8d0a4bfc1b03)
 
 <br />
 
 
 ### 📱 Versão Mobile (PWA)
-| **Cadastro de Usuário** | **Dashboard** |
-|:---:|:---:|
-| <img src="./assets/tela-cadastro.png" width="250" alt="Tela de Cadastro" /> | <img src="./assets/tela-dashboard.png" width="250" alt="Dashboard" /> |
-| *Formulário simplificado* | *Acesso rápido às coletas* |
+
+#### **Tela Inicial** 
+
 
 ---
 
