@@ -6,12 +6,11 @@ import React, {
   ReactNode,
   useState,
   useEffect,
+  useRef,
 } from "react";
-// Importa os tipos do Prisma 
 import { Usuario, Doador, Voluntario, Empresa } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
-// Definição do tipo da sessão 
 type UserSession = Omit<Usuario, "senha"> & {
   doador?: Doador | null;
   voluntario?: Voluntario | null;
@@ -27,13 +26,43 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// --- COMPONENTE PROVIDER ---
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  
+  // Referência para o cronômetro de inatividade
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Tempo de inatividade: 15 minutos 
+  const INACTIVITY_TIME = 15 * 60 * 1000;
 
-  // Verifica sessão ao carregar
+  // Função para limpar e reiniciar o cronômetro
+  const resetTimer = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
+    if (session) {
+      timerRef.current = setTimeout(() => {       
+        logout(); 
+      }, INACTIVITY_TIME);
+    }
+  };
+
+  // Monitoramento de eventos de atividade
+  useEffect(() => {
+    const events = ["mousedown", "keydown", "scroll", "touchstart"];
+
+    if (session) {
+      events.forEach((event) => window.addEventListener(event, resetTimer));
+      resetTimer(); 
+    }
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
+    };
+  }, [session]);
+
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -51,12 +80,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, []);
 
-  // Função de Login
   const login = async (email: string, password: string) => {
     setIsLoading(true); 
     try {
       const emailLower = email.toLowerCase();
-
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,14 +91,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       const data = await res.json();
-
-      if (!res.ok) {        
-        throw new Error(data.message || "Email ou senha incorretos");
-      }
+      if (!res.ok) throw new Error(data.message || "Email ou senha incorretos");
 
       setSession(data);
-      console.log("Login efetuado:", data.nome);
-      
     } catch (error) {
       throw error; 
     } finally {
@@ -79,7 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Função de Logout
   const logout = async () => {
     try {
         await fetch("/api/auth/logout", { method: "POST" });
@@ -87,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Erro ao sair", error);
     }
     setSession(null);
-    router.push("/");
+    router.push("/"); 
   };
 
   return (
@@ -96,7 +117,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 } 
-
 
 export function useAuth() {
   const context = useContext(AuthContext);
